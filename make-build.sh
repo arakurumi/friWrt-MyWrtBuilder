@@ -66,6 +66,9 @@ PACKAGES+=" luci-theme-argon luci-app-argon-config"
 # Alpha Theme
 PACKAGES+=" luci-theme-alpha luci-app-alpha-config"
 
+# Material Theme
+PACKAGES+=" luci-theme-material"
+
 # RTA Theme
 PACKAGES+=" luci-theme-rta luci-app-rtaconfig"
 
