@@ -1,6 +1,6 @@
 http:
   pprof:
-    port: 6060
+    port: 5353
     enabled: false
   address: 0.0.0.0:3000
   session_ttl: 720h
@@ -22,27 +22,15 @@ dns:
   refuse_any: true
   upstream_dns:
     - '[/pool.ntp.org/]1.1.1.1'
-    - '[/id.pool.ntp.org/]8.8.8.8'
-    - 8.8.8.8
-    - 9.9.9.9
-    - 1.1.1.1
-    - 208.67.222.222
-    - '#https://dns.bebasid.com/dns-query'
-    - '#https://dns.cloudflare.com/dns-query'
-    - '#https://dns.google/dns-query'
+    - '[/id.pool.ntp.org/]1.1.1.1'
+    - https://dns.cloudflare.com/dns-query
   upstream_dns_file: ""
   bootstrap_dns:
-    - 8.8.8.8
-    - 9.9.9.9
     - 1.1.1.1
-    - 149.112.112.112
-  fallback_dns:
-    - 149.112.112.112
     - 1.0.0.1
-    - 8.8.4.4
-    - 208.67.220.220
-    - '#https://dns.cloudflare.com/dns-query'
-    - '#https://dns.google/dns-query'
+  fallback_dns:
+    - 1.1.1.1
+    - 1.0.0.1
   upstream_mode: parallel
   fastest_timeout: 1s
   allowed_clients: []
