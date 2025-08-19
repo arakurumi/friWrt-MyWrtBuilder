@@ -9,7 +9,7 @@ geoip_dat_url="${base_url}/geoip.dat"
 geoip_mmdb_url="${base_url}/geoip.metadb"
 geosite_dat_url="${base_url}/geosite.dat"
 
-nikki_dir="/etc/nikki"
+nikki_dir="files/etc/nikki"
 
 mkdir -p $nikki_dir
 
