@@ -64,7 +64,6 @@
     fi
 
     files2+=(
-        "luci-app-3ginfo-lite|https://api.github.com/repos/4IceG/luci-app-3ginfo-lite/releases/latest"
         "luci-app-adguardhome|https://api.github.com/repos/kongfl888/luci-app-adguardhome/releases/latest"
         "luci-app-alpha-config|https://api.github.com/repos/derisamedia/luci-theme-alpha/releases/latest"
         "luci-app-argon-config|https://api.github.com/repos/jerrykuku/luci-app-argon-config/releases/latest"
@@ -74,11 +73,12 @@
         "luci-app-netmonitor|https://api.github.com/repos/rtaserver/rta-packages/releases"
         "luci-app-ramfree|https://api.github.com/repos/Houjie80/luci-app-ramfree/releases/latest"
         "luci-app-rtaconfig|https://api.github.com/repos/rtaserver/RTA-Theme-OpenWrt/releases/latest"
-        "luci-app-sms-tool-js|https://api.github.com/repos/4IceG/luci-app-sms-tool-js/releases/latest"
         "luci-theme-alpha|https://api.github.com/repos/derisamedia/luci-theme-alpha/releases/latest"
-        "luci-theme-argon|https://api.github.com/repos/jerrykuku/luci-theme-argon/releases/latest"
         "luci-theme-rta|https://api.github.com/repos/rtaserver/RTA-Theme-OpenWrt/releases/latest"
         "modemband|https://api.github.com/repos/4IceG/luci-app-modemband/releases/latest"
+        # "luci-app-3ginfo-lite|https://api.github.com/repos/4IceG/luci-app-3ginfo-lite/releases/latest"
+        # "luci-app-sms-tool-js|https://api.github.com/repos/4IceG/luci-app-sms-tool-js/releases/latest"
+        # "luci-theme-argon|https://api.github.com/repos/jerrykuku/luci-theme-argon/releases/latest"
     )
 
     echo "#########################################"
