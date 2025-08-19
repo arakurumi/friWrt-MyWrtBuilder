@@ -9,13 +9,13 @@ geoip_dat_url="${base_url}/geoip.dat"
 geoip_mmdb_url="${base_url}/geoip.metadb"
 geosite_dat_url="${base_url}/geosite.dat"
 
-nikki_dir="files/etc/nikki"
+nikki_dir="files/etc/nikki/run"
+
+geoip_dat_path="${nikki_dir}/geoip.dat"
+geoip_mmdb_path="${nikki_dir}/geoip.metadb"
+geosite_dat_path="${nikki_dir}/geosite.dat"
 
 mkdir -p $nikki_dir
-
-geoip_dat_path="${nikki_dir}/run/geoip.dat"
-geoip_mmdb_path="${nikki_dir}/run/geoip.metadb"
-geosite_dat_path="${nikki_dir}/run/geosite.dat"
 
 if [ -f ${geoip_dat_path} ]; then
     echo "[ $(date +%T) ] - GeoIP Dat OK"
