@@ -15,7 +15,7 @@ elif grep -q "OpenWrt" /etc/openwrt_release; then
   sed -i "s/\(DISTRIB_DESCRIPTION='OpenWrt [0-9]*\.[0-9]*\.[0-9]*\).*'/\1'/g" /etc/openwrt_release
   echo Branch version: "$(grep 'DISTRIB_DESCRIPTION=' /etc/openwrt_release | awk -F"'" '{print $2}')"
 fi
-echo "Tunnel Installed: $(opkg list-installed | grep -e luci-app-neko -e luci-app-openclash -e luci-app-passwall | awk '{print $1}' | tr '\n' ' ')"
+echo "Tunnel Installed: $(opkg list-installed | grep -e luci-app-nikki -e luci-app-neko -e luci-app-openclash -e luci-app-passwall | awk '{print $1}' | tr '\n' ' ')"
 echo "###############################################"
 
 # Set login root password

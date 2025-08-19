@@ -18,13 +18,15 @@ on:
       release_branch:
         description: "Select the release branch:"
         required: true
-        default: "openwrt:24.10.1"
+        default: "openwrt:24.10.2"
         type: choice
         options:
           - openwrt:24.10.0
           - openwrt:24.10.1
+          - openwrt:24.10.2
           - immortalwrt:24.10.0
           - immortalwrt:24.10.1
+          - immortalwrt:24.10.2
       target:
         description: "Select device board"
         required: false

@@ -41,8 +41,8 @@ PACKAGES+=" modeminfo luci-app-modeminfo atinout modemband luci-app-modemband lu
 # Tunnel option
 NEKO="bash kmod-tun php8 php8-cgi luci-app-neko"
 NIKKI="ca-bundle curl ip-full kmod-inet-diag kmod-nft-tproxy kmod-tun luci-app-nikki luci-i18n-nikki-zh-cn nikki"
-OPENCLASH+="coreutils-nohup bash dnsmasq-full curl ca-certificates ipset ip-full libcap libcap-bin ruby ruby-yaml kmod-tun kmod-inet-diag unzip kmod-nft-tproxy luci-compat luci luci-base luci-app-openclash"
-PASSWALL+="chinadns-ng resolveip dns2socks ipt2socks microsocks tcping xray-core xray-plugin luci-app-passwall"
+OPENCLASH="coreutils-nohup bash dnsmasq-full curl ca-certificates ipset ip-full libcap libcap-bin ruby ruby-yaml kmod-tun kmod-inet-diag unzip kmod-nft-tproxy luci-compat luci luci-base luci-app-openclash"
+PASSWALL="chinadns-ng resolveip dns2socks ipt2socks microsocks tcping xray-core xray-plugin luci-app-passwall"
 
 if [ "$2" == "neko" ]; then
     PACKAGES+=" $NEKO"
