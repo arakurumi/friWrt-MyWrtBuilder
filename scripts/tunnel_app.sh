@@ -4,8 +4,8 @@
 neko_download="$(curl -s https://api.github.com/repos/nosignals/neko/releases/latest | jq -r '.assets[] | select(.name | endswith("_23_05.ipk")) | .browser_download_url')"
 
 # Nikki
-nikki_package_file="nikki_aarch64_cortex-a53-openwrt-24.10.tar.gz"
-nikki_package_download="https://github.com/nikkinikki-org/OpenWrt-nikki/releases/latest/download/nikki_aarch64_cortex-a53-openwrt-24.10.tar.gz"
+nikki_package_file="nikki_aarch64_generic-openwrt-24.10.tar.gz"
+nikki_package_download="https://github.com/nikkinikki-org/OpenWrt-nikki/releases/latest/download/nikki_aarch64_generic-openwrt-24.10.tar.gz"
 
 # Openclash
 openclash_api="https://api.github.com/repos/vernesong/OpenClash/releases"
@@ -15,8 +15,8 @@ openclash_download="$(curl -s ${openclash_api} | grep "browser_download_url" | g
 # Passwall
 passwall_file="luci-app-passwall"
 passwall_download="https://github.com/xiaorouji/openwrt-passwall/releases/latest/download/luci-24.10_luci-app-passwall_25.8.5-r2_all.ipk"
-passwall_package_file="passwall_packages_ipk_aarch64_cortex-a53.zip"
-passwall_package_download="https://github.com/xiaorouji/openwrt-passwall/releases/latest/download/passwall_packages_ipk_aarch64_cortex-a53.zip"
+passwall_package_file="passwall_packages_ipk_aarch64_generic.zip"
+passwall_package_download="https://github.com/xiaorouji/openwrt-passwall/releases/latest/download/passwall_packages_ipk_aarch64_generic.zip"
 
 if [ "$1" == "neko" ]; then
     echo "Downloading Neko packages"
