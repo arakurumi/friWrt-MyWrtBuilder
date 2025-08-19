@@ -333,8 +333,8 @@ jobs:
             - Default IP: 192.168.1.1
             - Default username: root
             - Default password: root
-            - Default WIFI name: OpenWRT | OpenWRT_5G (if device supported)
-            - Default WIFI password: password (if device supported)
+            - Default WIFI name: OpenWRT_2G / OpenWRT_5G (if device supported)
+            - Default WIFI password: OpenWRT (if device supported)
 
             ### Install to EMMC
             - Login to OpenWrt → System → Amlogic Service → Install OpenWrt

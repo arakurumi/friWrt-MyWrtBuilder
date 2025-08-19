@@ -30,7 +30,7 @@ Please read instruction given.
 
 Login info
 * 192.168.1.1 | user: root | password: root
-* SSID: OpenWRT | password: OpenWRT
+* SSID: OpenWRT_2G / OpenWRT_5G | password: OpenWRT
 
 - Modemmanager protocol for connecting 4g/5g modems (tested using Dell DW5821e Snapdragon X20 LTE),
 - Modemmanager with auto-reconnect,
