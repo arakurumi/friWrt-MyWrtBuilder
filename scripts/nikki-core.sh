@@ -11,6 +11,8 @@ geosite_dat_url="${base_url}/geosite.dat"
 
 nikki_dir="/etc/nikki"
 
+mkdir -p $nikki_dir
+
 geoip_dat_path="${nikki_dir}/run/geoip.dat"
 geoip_mmdb_path="${nikki_dir}/run/geoip.metadb"
 geosite_dat_path="${nikki_dir}/run/geosite.dat"
