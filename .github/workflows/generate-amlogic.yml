@@ -113,7 +113,7 @@ env:
 jobs:
   Generate:
     name: amlogic-${{ inputs.target }}-${{ inputs.release_branch }}-${{ inputs.tunnel }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checking Tunnel Option
@@ -247,9 +247,10 @@ jobs:
           bash scripts/misc.sh
           echo "VPN Client: $TUNNEL"
           bash scripts/tunnel_app.sh $TUNNEL
-          if [ "$TUNNEL" = "openclash" ] || [ "$TUNNEL" = "neko-openclash-passwall" ]; then bash scripts/clash-core.sh; fi
-          if [ "$TUNNEL" = "neko" ] || [ "$TUNNEL" = "neko-openclash-passwall" ]; then bash scripts/neko_core.sh; fi
-          if [ "$TUNNEL" = "neko-openclash-passwall" ]; then bash scripts/clash-core.sh; bash scripts/neko_core.sh; fi
+          if [ "$TUNNEL" = "neko-nikki-openclash-passwall" ]; then bash scripts/neko_core.sh; bash scripts/nikki.sh; bash scripts/clash_core.sh; fi
+          if [ "$TUNNEL" = "neko" ] || [ "$TUNNEL" = "neko-nikki-openclash-passwall" ]; then bash scripts/neko_core.sh; fi
+          if [ "$TUNNEL" = "nikki" ] || [ "$TUNNEL" = "neko-nikki-openclash-passwall" ]; then bash scripts/nikki-core.sh; fi
+          if [ "$TUNNEL" = "openclash" ] || [ "$TUNNEL" = "neko-nikki-openclash-passwall" ]; then bash scripts/clash-core.sh; fi
           echo "Total custom packages: $(find packages -type f -name "*.ipk" | wc -l)"
           ls packages
           echo "status=success" >> $GITHUB_OUTPUT

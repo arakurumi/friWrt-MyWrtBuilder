@@ -162,6 +162,13 @@ chmod +x /sbin/sync_time.sh
 chmod +x /usr/bin/clock
 chmod +x /usr/bin/mount_hdd
 
+# configurating neko
+if opkg list-installed | grep luci-app-neko >/dev/null; then
+  echo "Neko Detected!"
+  echo "Configuring Mihomo Core..."
+  chmod +x /etc/neko/core/mihomo
+fi
+
 # configurating openclash
 if opkg list-installed | grep luci-app-openclash >/dev/null; then
   echo "Openclash Detected!"
@@ -188,15 +195,14 @@ else
   service internet-detector restart
 fi
 
-# configurating neko
-if opkg list-installed | grep luci-app-neko >/dev/null; then
-  chmod +x /etc/neko/core/mihomo
-fi
-
 # adding new line for enable i2c oled display
 if grep -q "Raspberry Pi 4\|Raspberry Pi 3" /proc/cpuinfo; then
   echo -e "\ndtparam=i2c1=on\ndtparam=spi=on\ndtparam=i2s=on" >>/boot/config.txt
 fi
+
+# install opkg-upgrade
+echo "Configuring OPKG-Upgrade..."
+wget "https://raw.githubusercontent.com/tavinus/opkg-upgrade/master/opkg-upgrade.sh" -O "/usr/sbin/opkg-upgrade" && chmod 755 "/usr/sbin/opkg-upgrade"
 
 echo "All first boot setup complete!"
 

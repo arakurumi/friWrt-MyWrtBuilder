@@ -1,8 +1,7 @@
 #!/bin/bash
 
-echo "Current Path: $PWD"
-
 echo "Start YACD Download !"
+echo "Current Path: $PWD"
 
 yacd_dir="${1:-files/usr/share/openclash/ui}"
 yacd="https://github.com/taamarin/yacd-meta/archive/gh-pages.zip"

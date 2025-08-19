@@ -1,7 +1,8 @@
 #!/bin/bash
 
-echo "Current Path: $PWD"
 echo "Start Neko Core Download !"
+echo "Current Path: $PWD"
+
 #core download url
 neko_dir="files/etc/neko"
 

@@ -56,10 +56,10 @@ fi
 
 # custom script files urls
 echo "Downloading custom script"
-sync_time="https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/sbin/sync_time.sh"
 clock="https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/usr/bin/clock"
-repair_ro="https://raw.githubusercontent.com/frizkyiman/fix-read-only/main/install2.sh"
 mount_hdd="https://raw.githubusercontent.com/frizkyiman/auto-mount-hdd/main/mount_hdd"
+repair_ro="https://raw.githubusercontent.com/frizkyiman/fix-read-only/main/install2.sh"
+sync_time="https://raw.githubusercontent.com/frizkyiman/auto-sync-time/main/sbin/sync_time.sh"
 
 wget --no-check-certificate -nv -P files/sbin "$sync_time"
 wget --no-check-certificate -nv -P files/usr/bin "$clock"

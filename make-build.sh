@@ -36,7 +36,7 @@ kmod-usb-uhci kmod-usb2 kmod-usb-ehci kmod-usb-net-ipheth usbmuxd libusbmuxd-uti
 kmod-phy-broadcom kmod-phylib-broadcom kmod-tg3 libusb-1.0-0"
 
 # Modem Tools
-PACKAGES+=" modeminfo luci-app-modeminfo atinout modemband luci-app-modemband luci-app-mmconfig sms-tool luci-app-sms-tool-js luci-app-lite-watchdog luci-app-3ginfo-lite picocom minicom"
+# PACKAGES+=" modeminfo luci-app-modeminfo atinout modemband luci-app-modemband luci-app-mmconfig sms-tool luci-app-sms-tool-js luci-app-lite-watchdog luci-app-3ginfo-lite picocom minicom"
 
 # Tunnel option
 NEKO="bash kmod-tun php8 php8-cgi luci-app-neko"
@@ -91,7 +91,7 @@ PACKAGES+=" luci-theme-rta luci-app-rtaconfig"
 PACKAGES+=" php8 php8-fastcgi php8-fpm php8-mod-session php8-mod-ctype php8-mod-fileinfo php8-mod-zip php8-mod-iconv php8-mod-mbstring"
 
 # More
-PACKAGES+=" luci-app-poweroff luci-app-log-viewer luci-app-ramfree"
+PACKAGES+=" luci-app-irqbalance luci-app-log-viewer luci-app-poweroff luci-app-ramfree"
 
 # Misc and some custom .ipk files
 if [ "${RELEASE_BRANCH%:*}" == "openwrt" ]; then
@@ -124,7 +124,7 @@ fi
 FILES="files"
 
 # Disable service
-DISABLED_SERVICES="AdGuardHome"
+# DISABLED_SERVICES="AdGuardHome"
 
 # Start build firmware
 make image PROFILE="$1" PACKAGES="$PACKAGES $EXCLUDED" FILES="$FILES" DISABLED_SERVICES="$DISABLED_SERVICES"

@@ -13,7 +13,7 @@ theme: auto
 dns:
   bind_hosts:
     - 0.0.0.0
-  port: 5353
+  port: 53
   anonymize_client_ip: false
   ratelimit: 50
   ratelimit_subnet_len_ipv4: 24
@@ -21,15 +21,12 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   upstream_dns:
-    - 1.1.1.1
-    - 1.0.0.1
+    - 127.0.0.1:1053
   upstream_dns_file: ""
   bootstrap_dns:
     - 1.1.1.1
     - 1.0.0.1
-  fallback_dns:
-    - 1.1.1.1
-    - 1.0.0.1
+  fallback_dns: []
   upstream_mode: parallel
   fastest_timeout: 1s
   allowed_clients: []
@@ -41,7 +38,7 @@ dns:
   trusted_proxies:
     - 127.0.0.0/8
     - ::1/128
-  cache_size: 8388608
+  cache_size: 0
   cache_ttl_min: 3600
   cache_ttl_max: 86400
   cache_optimistic: true
@@ -59,7 +56,7 @@ dns:
   bootstrap_prefer_ipv6: false
   upstream_timeout: 10s
   private_networks: []
-  use_private_ptr_resolvers: true
+  use_private_ptr_resolvers: false
   local_ptr_upstreams: []
   use_dns64: false
   dns64_prefixes: []
@@ -67,6 +64,8 @@ dns:
   use_http3_upstreams: false
   serve_plain_dns: true
   hostsfile_enabled: true
+  pending_requests:
+    enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -99,7 +98,31 @@ filters:
     url: https://big.oisd.nl/
     name: oisd Blocklist Big
     id: 1702484663
-whitelist_filters: []
+  - enabled: true
+    url: https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Formats/GoodbyeAds-AdBlock-Filter.txt
+    name: GoodByeAds
+    id: 1755588167
+  - enabled: true
+    url: https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Extension/GoodbyeAds-Samsung-AdBlock.txt
+    name: GoodByeAds_Samsung
+    id: 1755588168
+  - enabled: true
+    url: https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Extension/GoodbyeAds-Spotify-AdBlock.txt
+    name: GoodByeAds_Spotify
+    id: 1755588169
+  - enabled: true
+    url: https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Extension/GoodbyeAds-Xiaomi-Extension.txt
+    name: GoodByeAds_Xiaomi
+    id: 1755588170
+  - enabled: true
+    url: https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Formats/GoodbyeAds-YouTube-AdBlock-Filter.txt
+    name: GoodByeAds_Youtube
+    id: 1755588171
+whitelist_filters:
+  - enabled: true
+    url: https://raw.githubusercontent.com/bebasid/bebasid/master/releases/hosts
+    name: BebasID
+    id: 1755588166
 user_rules:
   - "@@||pagead2.googlesyndication.com^$important"
   - "@@||googleadservices.com^$important"
@@ -133,6 +156,7 @@ filtering:
     enabled: false
     bing: true
     duckduckgo: true
+    ecosia: true
     google: true
     pixabay: true
     yandex: true
@@ -141,6 +165,8 @@ filtering:
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites: []
+  safe_fs_patterns:
+    - /opt/AdGuardHome/data/userfilters/*
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
@@ -160,6 +186,7 @@ clients:
     hosts: true
   persistent: []
 log:
+  enabled: true
   file: ""
   max_backups: 0
   max_size: 100
@@ -171,4 +198,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 28
+schema_version: 29

@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # patch openclash
-STATUS="/usr/lib/lua/luci/view/openclash/status.htm"
-DEV="/usr/lib/lua/luci/view/openclash/developer.htm"
-MYIP="/usr/lib/lua/luci/view/openclash/myip.htm"
-IMG="/luci-static/resources/openclash/img"
 CLIENT="/usr/lib/lua/luci/model/cbi/openclash/client.lua"
 CONT="/usr/lib/lua/luci/controller/openclash.lua"
+DEV="/usr/lib/lua/luci/view/openclash/developer.htm"
+IMG="/luci-static/resources/openclash/img"
+MYIP="/usr/lib/lua/luci/view/openclash/myip.htm"
+STATUS="/usr/lib/lua/luci/view/openclash/status.htm"
 
 [ -f "/www/${IMG}/logo.png" ] && sed -i "s#https://ftp.jaist.ac.jp/pub/sourceforge.jp/storage/g/o/op/openclash/<%=RELEASE_BRANCH%>/img/logo.png#$IMG/logo.png#g" $STATUS
 [ -f "/www/${IMG}/meta.png" ] && sed -i "s#https://ftp.jaist.ac.jp/pub/sourceforge.jp/storage/g/o/op/openclash/<%=RELEASE_BRANCH%>/img/meta.png#$IMG/meta.png#g" $STATUS
