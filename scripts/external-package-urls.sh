@@ -59,7 +59,7 @@
 # Download custom packages from github release api urls
 {
     if [ "$TYPE" == "AMLOGIC" ]; then
-        echo "Adding [luci-app-amlogic] from bulider script type."
+        echo "Adding [luci-app-amlogic] from builder script type."
         files2+=("luci-app-amlogic|https://api.github.com/repos/ophub/luci-app-amlogic/releases/latest")
     fi
 
@@ -88,7 +88,7 @@
     for entry in "${files2[@]}"; do
         IFS="|" read -r filename2 base_url <<<"$entry"
         echo "Processing file: $filename2"
-        file_urls=$(curl -s "$base_url" | grep "browser_download_url" | grep -oE "https.*/${filename2}_[_0-9a-zA-Z\._~-]*\.ipk" | sort -V | tail -n 1)
+        file_urls=$(curl -s "$base_url" | grep "browser_download_url" | grep -oE "https.*/${filename2}[_0-9a-zA-Z\._~-]*\.ipk" | sort -V | tail -n 1)
         for file_url in $file_urls; do
             if [ ! -z "$file_url" ]; then
                 echo "Downloading $(basename "$file_url")"
