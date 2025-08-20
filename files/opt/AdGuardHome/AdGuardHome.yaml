@@ -15,7 +15,7 @@ dns:
     - 0.0.0.0
   port: 53
   anonymize_client_ip: false
-  ratelimit: 50
+  ratelimit: 0
   ratelimit_subnet_len_ipv4: 24
   ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
@@ -26,8 +26,9 @@ dns:
   bootstrap_dns:
     - 1.1.1.1
     - 1.0.0.1
-  fallback_dns: []
-  upstream_mode: parallel
+  fallback_dns:
+    - 127.0.0.1:1053
+  upstream_mode: fastest_addr
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
@@ -39,15 +40,15 @@ dns:
     - 127.0.0.0/8
     - ::1/128
   cache_size: 0
-  cache_ttl_min: 3600
-  cache_ttl_max: 86400
+  cache_ttl_min: 600
+  cache_ttl_max: 3600
   cache_optimistic: true
   bogus_nxdomain: []
   aaaa_disabled: false
-  enable_dnssec: true
+  enable_dnssec: false
   edns_client_subnet:
     custom_ip: ""
-    enabled: true
+    enabled: false
     use_custom: false
   max_goroutines: 300
   handle_ddr: true
@@ -126,6 +127,7 @@ whitelist_filters:
 user_rules:
   - "@@||pagead2.googlesyndication.com^$important"
   - "@@||googleadservices.com^$important"
+  - "@@||adtival.network^$important"
   - ""
 dhcp:
   enabled: false
