@@ -9,8 +9,7 @@
 	init_proto "$@"
 }
 
-ppp_select_ipaddr()
-{
+ppp_select_ipaddr() {
 	local subnets=$1
 	local res
 	local res_mask
@@ -33,35 +32,34 @@ ppp_select_ipaddr()
 	echo "$res"
 }
 
-ppp_exitcode_tostring()
-{
+ppp_exitcode_tostring() {
 	local errorcode=$1
 	[ -n "$errorcode" ] || errorcode=5
 
 	case "$errorcode" in
-		0) echo "OK" ;;
-		1) echo "FATAL_ERROR" ;;
-		2) echo "OPTION_ERROR" ;;
-		3) echo "NOT_ROOT" ;;
-		4) echo "NO_KERNEL_SUPPORT" ;;
-		5) echo "USER_REQUEST" ;;
-		6) echo "LOCK_FAILED" ;;
-		7) echo "OPEN_FAILED" ;;
-		8) echo "CONNECT_FAILED" ;;
-		9) echo "PTYCMD_FAILED" ;;
-		10) echo "NEGOTIATION_FAILED" ;;
-		11) echo "PEER_AUTH_FAILED" ;;
-		12) echo "IDLE_TIMEOUT" ;;
-		13) echo "CONNECT_TIME" ;;
-		14) echo "CALLBACK" ;;
-		15) echo "PEER_DEAD" ;;
-		16) echo "HANGUP" ;;
-		17) echo "LOOPBACK" ;;
-		18) echo "INIT_FAILED" ;;
-		19) echo "AUTH_TOPEER_FAILED" ;;
-		20) echo "TRAFFIC_LIMIT" ;;
-		21) echo "CNID_AUTH_FAILED";;
-		*) echo "UNKNOWN_ERROR" ;;
+	0) echo "OK" ;;
+	1) echo "FATAL_ERROR" ;;
+	2) echo "OPTION_ERROR" ;;
+	3) echo "NOT_ROOT" ;;
+	4) echo "NO_KERNEL_SUPPORT" ;;
+	5) echo "USER_REQUEST" ;;
+	6) echo "LOCK_FAILED" ;;
+	7) echo "OPEN_FAILED" ;;
+	8) echo "CONNECT_FAILED" ;;
+	9) echo "PTYCMD_FAILED" ;;
+	10) echo "NEGOTIATION_FAILED" ;;
+	11) echo "PEER_AUTH_FAILED" ;;
+	12) echo "IDLE_TIMEOUT" ;;
+	13) echo "CONNECT_TIME" ;;
+	14) echo "CALLBACK" ;;
+	15) echo "PEER_DEAD" ;;
+	16) echo "HANGUP" ;;
+	17) echo "LOOPBACK" ;;
+	18) echo "INIT_FAILED" ;;
+	19) echo "AUTH_TOPEER_FAILED" ;;
+	20) echo "TRAFFIC_LIMIT" ;;
+	21) echo "CNID_AUTH_FAILED" ;;
+	*) echo "UNKNOWN_ERROR" ;;
 	esac
 }
 
@@ -85,7 +83,8 @@ ppp_generic_init_config() {
 }
 
 ppp_generic_setup() {
-	local config="$1"; shift
+	local config="$1"
+	shift
 	local localip
 
 	json_get_vars ip6table demand keepalive keepalive_adaptive username password pppd_options pppname unnumbered persist maxfail holdoff peerdns
@@ -114,7 +113,7 @@ ppp_generic_setup() {
 	[ -n "$pppname" ] || pppname="${proto:-ppp}-$config"
 	[ -n "$unnumbered" ] && {
 		local subnets
-		( proto_add_host_dependency "$config" "" "$unnumbered" )
+		(proto_add_host_dependency "$config" "" "$unnumbered")
 		network_get_subnets subnets "$unnumbered"
 		localip=$(ppp_select_ipaddr "$subnets")
 		[ -n "$localip" ] || {
@@ -163,21 +162,20 @@ ppp_generic_teardown() {
 	local errorstring=$(ppp_exitcode_tostring $ERROR)
 
 	case "$ERROR" in
-		0)
+	0) ;;
+	2)
+		proto_notify_error "$interface" "$errorstring"
+		proto_block_restart "$interface"
 		;;
-		2)
-			proto_notify_error "$interface" "$errorstring"
+	11 | 19)
+		json_get_var authfail authfail
+		proto_notify_error "$interface" "$errorstring"
+		if [ "${authfail:-0}" -gt 0 ]; then
 			proto_block_restart "$interface"
+		fi
 		;;
-		11|19)
-			json_get_var authfail authfail
-			proto_notify_error "$interface" "$errorstring"
-			if [ "${authfail:-0}" -gt 0 ]; then
-				proto_block_restart "$interface"
-			fi
-		;;
-		*)
-			proto_notify_error "$interface" "$errorstring"
+	*)
+		proto_notify_error "$interface" "$errorstring"
 		;;
 	esac
 
@@ -265,8 +263,8 @@ proto_pppoa_setup() {
 	json_get_vars atmdev vci vpi encaps
 
 	case "$encaps" in
-		1|vc) encaps="vc-encaps" ;;
-		*) encaps="llc-encaps" ;;
+	1 | vc) encaps="vc-encaps" ;;
+	*) encaps="llc-encaps" ;;
 	esac
 
 	ppp_generic_setup "$config" \
@@ -296,7 +294,7 @@ proto_pptp_setup() {
 	json_get_vars interface server
 	[ -n "$server" ] && {
 		for ip in $(resolveip -t 5 "$server"); do
-			( proto_add_host_dependency "$config" "$ip" $interface )
+			(proto_add_host_dependency "$config" "$ip" $interface)
 			serv_addr=1
 		done
 	}

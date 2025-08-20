@@ -135,7 +135,7 @@ proto_add_ipv6_address() {
 	append PROTO_IP6ADDR "$address/$mask/$preferred/$valid/$offlink/$class"
 }
 
-proto_add_ipv4_neighbor(){
+proto_add_ipv4_neighbor() {
 	local address="$1"
 	local mac="$2"
 	local proxy="$3"
@@ -143,7 +143,7 @@ proto_add_ipv4_neighbor(){
 	append PROTO_NEIGHBOR "$address/$mac/$proxy"
 }
 
-proto_add_ipv6_neighbor(){
+proto_add_ipv6_neighbor() {
 	local address="$1"
 	local mac="$2"
 	local proxy="$3"
@@ -237,7 +237,7 @@ _proto_push_string() {
 	json_add_string "" "$1"
 }
 
-_proto_push_ipv4_neighbor(){
+_proto_push_ipv4_neighbor() {
 	local str="$1"
 	local address mac proxy
 
@@ -254,7 +254,7 @@ _proto_push_ipv4_neighbor(){
 	json_close_object
 }
 
-_proto_push_ipv6_neighbor(){
+_proto_push_ipv6_neighbor() {
 	local str="$1"
 	local address mac proxy router
 
@@ -275,7 +275,7 @@ _proto_push_ipv6_neighbor(){
 }
 
 _proto_push_route() {
-	local str="$1";
+	local str="$1"
 	local target="${str%%/*}"
 	str="${str#*/}"
 	local mask="${str%%/*}"
@@ -346,7 +346,8 @@ proto_export() {
 }
 
 proto_run_command() {
-	local interface="$1"; shift
+	local interface="$1"
+	shift
 
 	json_init
 	json_add_int action 1
@@ -367,7 +368,8 @@ proto_run_command() {
 }
 
 proto_kill_command() {
-	local interface="$1"; shift
+	local interface="$1"
+	shift
 
 	json_init
 	json_add_int action 2
@@ -376,7 +378,8 @@ proto_kill_command() {
 }
 
 proto_notify_error() {
-	local interface="$1"; shift
+	local interface="$1"
+	shift
 
 	json_init
 	json_add_int action 3
@@ -390,7 +393,8 @@ proto_notify_error() {
 }
 
 proto_block_restart() {
-	local interface="$1"; shift
+	local interface="$1"
+	shift
 
 	json_init
 	json_add_int action 4
@@ -430,49 +434,54 @@ proto_setup_failed() {
 }
 
 init_proto() {
-	proto="$1"; shift
-	cmd="$1"; shift
+	proto="$1"
+	shift
+	cmd="$1"
+	shift
 
 	case "$cmd" in
-		dump)
-			add_protocol() {
-				no_device=0
-				no_proto_task=0
-				available=0
-				renew_handler=0
-				teardown_on_l3_link_down=0
+	dump)
+		add_protocol() {
+			no_device=0
+			no_proto_task=0
+			available=0
+			renew_handler=0
+			teardown_on_l3_link_down=0
 
-				add_default_handler "proto_$1_init_config"
+			add_default_handler "proto_$1_init_config"
 
-				json_init
-				json_add_string "name" "$1"
-				json_add_array "config"
-				eval "proto_$1_init_config"
-				json_close_array
-				json_add_boolean no-device "$no_device"
-				json_add_boolean no-proto-task "$no_proto_task"
-				json_add_boolean available "$available"
-				json_add_boolean renew-handler "$renew_handler"
-				json_add_boolean lasterror "$lasterror"
-				json_add_boolean teardown-on-l3-link-down "$teardown_on_l3_link_down"
-				json_dump
-			}
+			json_init
+			json_add_string "name" "$1"
+			json_add_array "config"
+			eval "proto_$1_init_config"
+			json_close_array
+			json_add_boolean no-device "$no_device"
+			json_add_boolean no-proto-task "$no_proto_task"
+			json_add_boolean available "$available"
+			json_add_boolean renew-handler "$renew_handler"
+			json_add_boolean lasterror "$lasterror"
+			json_add_boolean teardown-on-l3-link-down "$teardown_on_l3_link_down"
+			json_dump
+		}
 		;;
-		setup|teardown|renew)
-			interface="$1"; shift
-			data="$1"; shift
-			ifname="$1"; shift
+	setup | teardown | renew)
+		interface="$1"
+		shift
+		data="$1"
+		shift
+		ifname="$1"
+		shift
 
-			add_protocol() {
-				[[ "$proto" == "$1" ]] || return 0
+		add_protocol() {
+			[[ "$proto" == "$1" ]] || return 0
 
-				case "$cmd" in
-					setup) _proto_do_setup "$1";;
-					teardown) _proto_do_teardown "$1" ;;
-					renew) _proto_do_renew "$1" ;;
-					*) return 1 ;;
-				esac
-			}
+			case "$cmd" in
+			setup) _proto_do_setup "$1" ;;
+			teardown) _proto_do_teardown "$1" ;;
+			renew) _proto_do_renew "$1" ;;
+			*) return 1 ;;
+			esac
+		}
 		;;
 	esac
 }

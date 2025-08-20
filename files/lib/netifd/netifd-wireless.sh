@@ -30,8 +30,8 @@ prepare_key_wep() {
 	local hex=1
 
 	echo -n "$key" | grep -qE "[^a-fA-F0-9]" && hex=0
-	[ "${#key}" -eq 10 -a $hex -eq 1 ] || \
-	[ "${#key}" -eq 26 -a $hex -eq 1 ] || {
+	[ "${#key}" -eq 10 -a $hex -eq 1 ] ||
+		[ "${#key}" -eq 26 -a $hex -eq 1 ] || {
 		[ "${key:0:2}" = "s:" ] && key="${key#s:}"
 		key="$(echo -n "$key" | hexdump -ve '1/1 "%02x" ""')"
 	}
@@ -47,37 +47,37 @@ _wdev_prepare_channel() {
 	hwmode="${hwmode##11}"
 
 	case "$channel" in
-		""|0|auto)
-			channel=0
-			auto_channel=1
+	"" | 0 | auto)
+		channel=0
+		auto_channel=1
 		;;
-		[0-9]*) ;;
-		*)
-			wireless_setup_failed "INVALID_CHANNEL"
+	[0-9]*) ;;
+	*)
+		wireless_setup_failed "INVALID_CHANNEL"
 		;;
 	esac
 
 	case "$hwmode" in
-		a|b|g|ad) ;;
-		*)
-			if [ "$channel" -gt 14 ]; then
-				hwmode=a
-			else
-				hwmode=g
-			fi
+	a | b | g | ad) ;;
+	*)
+		if [ "$channel" -gt 14 ]; then
+			hwmode=a
+		else
+			hwmode=g
+		fi
 		;;
 	esac
 
 	case "$band" in
-		2g) hwmode=g;;
-		5g|6g) hwmode=a;;
-		60g) hwmode=ad;;
-		*)
-			case "$hwmode" in
-				*a) band=5g;;
-				*ad) band=60g;;
-				*b|*g) band=2g;;
-			esac
+	2g) hwmode=g ;;
+	5g | 6g) hwmode=a ;;
+	60g) hwmode=ad ;;
+	*)
+		case "$hwmode" in
+		*a) band=5g ;;
+		*ad) band=60g ;;
+		*b | *g) band=2g ;;
+		esac
 		;;
 	esac
 }
@@ -138,8 +138,10 @@ _wdev_add_variables() {
 }
 
 _wireless_add_vif() {
-	local name="$1"; shift
-	local ifname="$1"; shift
+	local name="$1"
+	shift
+	local ifname="$1"
+	shift
 
 	_wdev_notify_init $CMD_SET_DATA "interface" "$name"
 	json_add_string "ifname" "$ifname"
@@ -148,8 +150,10 @@ _wireless_add_vif() {
 }
 
 _wireless_add_vlan() {
-	local name="$1"; shift
-	local ifname="$1"; shift
+	local name="$1"
+	shift
+	local ifname="$1"
+	shift
 
 	_wdev_notify_init $CMD_SET_DATA "vlan" "$name"
 	json_add_string "ifname" "$ifname"
@@ -200,7 +204,7 @@ _wdev_wrapper \
 	wireless_set_data \
 	wireless_add_process \
 	wireless_process_kill_all \
-	wireless_set_retry \
+	wireless_set_retry
 
 wireless_vif_parse_encryption() {
 	json_get_vars encryption
@@ -219,17 +223,17 @@ wireless_vif_parse_encryption() {
 	# WPA3 enterprise requires the GCMP-256 cipher (technically also CCMP and GCMP are possible
 	# but many clients/devices do not support that)
 	case "$encryption" in
-		wpa3-mixed*) wpa_cipher="${wpa_cipher} GCMP-256";;
-		wpa3*) wpa_cipher="GCMP-256";;
+	wpa3-mixed*) wpa_cipher="${wpa_cipher} GCMP-256" ;;
+	wpa3*) wpa_cipher="GCMP-256" ;;
 	esac
 
 	case "$encryption" in
-		*tkip+aes|*tkip+ccmp|*aes+tkip|*ccmp+tkip) wpa_cipher="CCMP TKIP";;
-		*ccmp256) wpa_cipher="CCMP-256";;
-		*aes|*ccmp) wpa_cipher="CCMP";;
-		*tkip) wpa_cipher="TKIP";;
-		*gcmp256) wpa_cipher="GCMP-256";;
-		*gcmp) wpa_cipher="GCMP";;
+	*tkip+aes | *tkip+ccmp | *aes+tkip | *ccmp+tkip) wpa_cipher="CCMP TKIP" ;;
+	*ccmp256) wpa_cipher="CCMP-256" ;;
+	*aes | *ccmp) wpa_cipher="CCMP" ;;
+	*tkip) wpa_cipher="TKIP" ;;
+	*gcmp256) wpa_cipher="GCMP-256" ;;
+	*gcmp) wpa_cipher="GCMP" ;;
 	esac
 
 	# 802.11n requires CCMP for WPA
@@ -241,61 +245,61 @@ wireless_vif_parse_encryption() {
 	# wpa2/tkip+aes     => WPA2 RADIUS, CCMP+TKIP
 
 	case "$encryption" in
-		wpa2*|wpa3*|*psk2*|psk3*|sae*|owe*)
-			wpa=2
+	wpa2* | wpa3* | *psk2* | psk3* | sae* | owe*)
+		wpa=2
 		;;
-		wpa*mixed*|*psk*mixed*)
-			wpa=3
+	wpa*mixed* | *psk*mixed*)
+		wpa=3
 		;;
-		wpa*|*psk*)
-			wpa=1
+	wpa* | *psk*)
+		wpa=1
 		;;
-		*)
-			wpa=0
-			wpa_cipher=
+	*)
+		wpa=0
+		wpa_cipher=
 		;;
 	esac
 	wpa_pairwise="$wpa_cipher"
 
 	case "$encryption" in
-		owe*)
-			auth_type=owe
+	owe*)
+		auth_type=owe
 		;;
-		wpa3-mixed*)
-			auth_type=eap-eap192
+	wpa3-mixed*)
+		auth_type=eap-eap192
 		;;
-		wpa3*)
-			auth_type=eap192
+	wpa3*)
+		auth_type=eap192
 		;;
-		psk3-mixed*|sae-mixed*)
-			auth_type=psk-sae
+	psk3-mixed* | sae-mixed*)
+		auth_type=psk-sae
 		;;
-		psk3*|sae*)
-			auth_type=sae
+	psk3* | sae*)
+		auth_type=sae
 		;;
-		*psk*)
-			auth_type=psk
+	*psk*)
+		auth_type=psk
 		;;
-		*wpa*|*8021x*)
-			auth_type=eap
+	*wpa* | *8021x*)
+		auth_type=eap
 		;;
-		*wep*)
-			auth_type=wep
-			case "$encryption" in
-				*shared*)
-					auth_mode_open=0
-					auth_mode_shared=1
-				;;
-				*mixed*)
-					auth_mode_shared=1
-				;;
-			esac
+	*wep*)
+		auth_type=wep
+		case "$encryption" in
+		*shared*)
+			auth_mode_open=0
+			auth_mode_shared=1
+			;;
+		*mixed*)
+			auth_mode_shared=1
+			;;
+		esac
 		;;
 	esac
 
 	case "$encryption" in
-		*osen*)
-			auth_osen=1
+	*osen*)
+		auth_osen=1
 		;;
 	esac
 }
@@ -311,7 +315,8 @@ _wireless_set_brsnoop_isolation() {
 }
 
 for_each_interface() {
-	local _w_types="$1"; shift
+	local _w_types="$1"
+	shift
 	local _w_ifaces _w_iface
 	local _w_type
 	local _w_found
@@ -389,49 +394,53 @@ _wdev_common_station_config() {
 }
 
 init_wireless_driver() {
-	name="$1"; shift
-	cmd="$1"; shift
+	name="$1"
+	shift
+	cmd="$1"
+	shift
 
 	case "$cmd" in
-		dump)
-			add_driver() {
-				eval "drv_$1_cleanup"
+	dump)
+		add_driver() {
+			eval "drv_$1_cleanup"
 
-				json_init
-				json_add_string name "$1"
+			json_init
+			json_add_string name "$1"
 
-				json_add_array device
-				_wdev_common_device_config
-				eval "drv_$1_init_device_config"
-				json_close_array
+			json_add_array device
+			_wdev_common_device_config
+			eval "drv_$1_init_device_config"
+			json_close_array
 
-				json_add_array iface
-				_wdev_common_iface_config
-				eval "drv_$1_init_iface_config"
-				json_close_array
+			json_add_array iface
+			_wdev_common_iface_config
+			eval "drv_$1_init_iface_config"
+			json_close_array
 
-				json_add_array vlan
-				_wdev_common_vlan_config
-				eval "drv_$1_init_vlan_config"
-				json_close_array
+			json_add_array vlan
+			_wdev_common_vlan_config
+			eval "drv_$1_init_vlan_config"
+			json_close_array
 
-				json_add_array station
-				_wdev_common_station_config
-				eval "drv_$1_init_station_config"
-				json_close_array
+			json_add_array station
+			_wdev_common_station_config
+			eval "drv_$1_init_station_config"
+			json_close_array
 
-				json_dump
-			}
+			json_dump
+		}
 		;;
-		setup|teardown)
-			interface="$1"; shift
-			data="$1"; shift
-			export __netifd_device="$interface"
+	setup | teardown)
+		interface="$1"
+		shift
+		data="$1"
+		shift
+		export __netifd_device="$interface"
 
-			add_driver() {
-				[[ "$name" == "$1" ]] || return 0
-				_wdev_handler "$1" "$cmd"
-			}
+		add_driver() {
+			[[ "$name" == "$1" ]] || return 0
+			_wdev_handler "$1" "$cmd"
+		}
 		;;
 	esac
 }

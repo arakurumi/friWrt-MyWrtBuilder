@@ -13,21 +13,21 @@ check_mac80211_device() {
 	config_get phy "$device" phy
 	json_select wlan
 	[ -n "$phy" ] && case "$phy" in
-		phy*)
-			[ -d /sys/class/ieee80211/$phy ] && \
-				phy_path="$(iwinfo nl80211 path "$dev")"
+	phy*)
+		[ -d /sys/class/ieee80211/$phy ] &&
+			phy_path="$(iwinfo nl80211 path "$dev")"
 		;;
-		*)
-			if json_is_a "$phy" object; then
-				json_select "$phy"
-				json_get_var phy_path path
-				json_select ..
-			elif json_is_a "${phy%.*}" object; then
-				json_select "${phy%.*}"
-				json_get_var phy_path path
-				json_select ..
-				phy_path="$phy_path+${phy##*.}"
-			fi
+	*)
+		if json_is_a "$phy" object; then
+			json_select "$phy"
+			json_get_var phy_path path
+			json_select ..
+		elif json_is_a "${phy%.*}" object; then
+			json_select "${phy%.*}"
+			json_get_var phy_path path
+			json_select ..
+			phy_path="$phy_path+${phy##*.}"
+		fi
 		;;
 	esac
 	json_select ..
@@ -44,11 +44,13 @@ check_mac80211_device() {
 	return 0
 }
 
-
 __get_band_defaults() {
 	local phy="$1"
 
-	( iw phy "$phy" info; echo ) | awk '
+	(
+		iw phy "$phy" info
+		echo
+	) | awk '
 BEGIN {
         bands = ""
 }
@@ -107,11 +109,11 @@ get_band_defaults() {
 		local mode="${c%%:*}"
 
 		case "$band" in
-			1) band=2g;;
-			2) band=5g;;
-			3) band=60g;;
-			4) band=6g;;
-			*) band="";;
+		1) band=2g ;;
+		2) band=5g ;;
+		3) band=60g ;;
+		4) band=6g ;;
+		*) band="" ;;
 		esac
 
 		[ -n "$band" ] || continue
@@ -184,16 +186,16 @@ detect_mac80211() {
 		name="radio${devidx}"
 		devidx=$(($devidx + 1))
 		case "$dev" in
-			phy*)
-				if [ -n "$path" ]; then
-					dev_id="set wireless.${name}.path='$path'"
-				else
-					dev_id="set wireless.${name}.macaddr='$macaddr'"
-				fi
-				;;
-			*)
-				dev_id="set wireless.${name}.phy='$dev'"
-				;;
+		phy*)
+			if [ -n "$path" ]; then
+				dev_id="set wireless.${name}.path='$path'"
+			else
+				dev_id="set wireless.${name}.macaddr='$macaddr'"
+			fi
+			;;
+		*)
+			dev_id="set wireless.${name}.phy='$dev'"
+			;;
 		esac
 
 		uci -q batch <<-EOF
@@ -211,8 +213,8 @@ detect_mac80211() {
 			set wireless.default_${name}.mode=ap
 			set wireless.default_${name}.ssid=OpenWRT
 			set wireless.default_${name}.encryption=psk2
-                        set wireless.default_${name}.key=OpenWRT
-EOF
+			            set wireless.default_${name}.key=OpenWRT
+		EOF
 		uci -q commit wireless
 	done
 }

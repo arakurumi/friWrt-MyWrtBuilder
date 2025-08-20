@@ -11,8 +11,8 @@ append() {
 
 add_default_handler() {
 	case "$(type $1 2>/dev/null)" in
-		*function*) return;;
-		*) eval "$1() { return; }"
+	*function*) return ;;
+	*) eval "$1() { return; }" ;;
 	esac
 }
 
@@ -23,7 +23,8 @@ set_default() {
 }
 
 _config_add_generic() {
-	local type="$1"; shift
+	local type="$1"
+	shift
 
 	for name in "$@"; do
 		json_add_array ""

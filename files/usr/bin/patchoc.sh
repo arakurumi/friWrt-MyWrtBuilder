@@ -16,22 +16,20 @@ STATUS="/usr/lib/lua/luci/view/openclash/status.htm"
 [ -f "/www/${IMG}/Telegram.svg" ] && sed -i "s#https://img.shields.io/badge/Telegram--lightgrey?logo=Telegram&style=social#$IMG/Telegram.svg#g" $STATUS
 [ -f "/www/${IMG}/Sponsor.svg" ] && sed -i "s#https://img.shields.io/badge/Sponsor--lightgrey?logo=ko-fi&style=social#$IMG/Sponsor.svg#g" $STATUS
 
-if ! grep -qE "\-\- s:section|\-\-s:section" $CLIENT
-then
-	sed -i "s#s:section#-- s:section#g" $CLIENT
-	mv $MYIP $MYIP.bak
-	cat << 'EOF' > $MYIP
+if ! grep -qE "\-\- s:section|\-\-s:section" $CLIENT; then
+    sed -i "s#s:section#-- s:section#g" $CLIENT
+    mv $MYIP $MYIP.bak
+    cat <<'EOF' >$MYIP
 <!DOCTYPE html>
 <html>
 </html>
 EOF
 fi
 
-if grep -q 'githubusercontent.com' $DEV
-then
-	sed -i 's#translate("Credits")#translate("")#g' $CLIENT
-	mv $DEV $DEV.bak
-	cat << 'EOF' > $DEV
+if grep -q 'githubusercontent.com' $DEV; then
+    sed -i 's#translate("Credits")#translate("")#g' $CLIENT
+    mv $DEV $DEV.bak
+    cat <<'EOF' >$DEV
 <style>
 .developer_ {
   text-align: justify;
@@ -64,7 +62,7 @@ fi
 
 if ! grep -q "Config Editor" $CONT && [ -f "/www/tinyfm/index.php" ]; then
     sed -i '87 i\	entry({"admin", "services", "openclash", "editor"}, template("openclash/editor"),_("Config Editor"), 90).leaf = true' $CONT
-    cat << EOF > /usr/lib/lua/luci/view/openclash/editor.htm
+    cat <<EOF >/usr/lib/lua/luci/view/openclash/editor.htm
 <%+header%>
 <div class="cbi-map">
 <iframe id="editor" style="width: 100%; min-height: 100vh; border: none; border-radius: 2px;"></iframe>
@@ -75,6 +73,6 @@ document.getElementById("editor").src = "http://" + window.location.hostname + "
 <%+footer%>
 EOF
 elif grep -q "Config Editor" $CONT && [ ! -f "/www/tinyfm/index.php" ]; then
-	sed -i '/Config Editor/d' $CONT
+    sed -i '/Config Editor/d' $CONT
 fi
 echo "done."

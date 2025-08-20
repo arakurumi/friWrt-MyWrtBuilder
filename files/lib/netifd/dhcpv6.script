@@ -3,17 +3,17 @@
 . /lib/functions.sh
 . /lib/netifd/netifd-proto.sh
 
-setup_interface () {
+setup_interface() {
 	local device="$1"
 	local prefsig=""
 	local addrsig=""
 
 	# Apply IPv6 / ND configuration
 	HOPLIMIT=$(cat /proc/sys/net/ipv6/conf/$device/hop_limit)
-	[ -n "$RA_HOPLIMIT" -a -n "$HOPLIMIT" ] && [ "$RA_HOPLIMIT" -gt "$HOPLIMIT" ] && echo "$RA_HOPLIMIT" > /proc/sys/net/ipv6/conf/$device/hop_limit
-	[ -n "$RA_MTU" ] && [ "$RA_MTU" -ge 1280 ] && echo "$RA_MTU" > /proc/sys/net/ipv6/conf/$device/mtu 2>/dev/null
-	[ -n "$RA_REACHABLE" ] && [ "$RA_REACHABLE" -gt 0 ] && echo "$RA_REACHABLE" > /proc/sys/net/ipv6/neigh/$device/base_reachable_time_ms
-	[ -n "$RA_RETRANSMIT" ] && [ "$RA_RETRANSMIT" -gt 0 ] && echo "$RA_RETRANSMIT" > /proc/sys/net/ipv6/neigh/$device/retrans_time_ms
+	[ -n "$RA_HOPLIMIT" -a -n "$HOPLIMIT" ] && [ "$RA_HOPLIMIT" -gt "$HOPLIMIT" ] && echo "$RA_HOPLIMIT" >/proc/sys/net/ipv6/conf/$device/hop_limit
+	[ -n "$RA_MTU" ] && [ "$RA_MTU" -ge 1280 ] && echo "$RA_MTU" >/proc/sys/net/ipv6/conf/$device/mtu 2>/dev/null
+	[ -n "$RA_REACHABLE" ] && [ "$RA_REACHABLE" -gt 0 ] && echo "$RA_REACHABLE" >/proc/sys/net/ipv6/neigh/$device/base_reachable_time_ms
+	[ -n "$RA_RETRANSMIT" ] && [ "$RA_RETRANSMIT" -gt 0 ] && echo "$RA_RETRANSMIT" >/proc/sys/net/ipv6/neigh/$device/retrans_time_ms
 
 	proto_init_update "*" 1
 
@@ -51,7 +51,7 @@ setup_interface () {
 		local valid="${entry%%,*}"
 
 		if [ -z "$RA_ADDRESSES" -a -z "$RA_ROUTES" -a \
-				-z "$RA_DNS" -a "$FAKE_ROUTES" = 1 ]; then
+			-z "$RA_DNS" -a "$FAKE_ROUTES" = 1 ]; then
 			RA_ROUTES="::/0,$SERVER,$valid,4096"
 		fi
 	done
@@ -84,7 +84,7 @@ setup_interface () {
 		addrsig="$addrsig $addr/$mask"
 
 		if [ -z "$RA_ADDRESSES" -a -z "$RA_ROUTES" -a \
-				-z "$RA_DNS" -a "$FAKE_ROUTES" = 1 ]; then
+			-z "$RA_DNS" -a "$FAKE_ROUTES" = 1 ]; then
 			RA_ROUTES="::/0,$SERVER,$valid,4096"
 		fi
 
@@ -102,7 +102,7 @@ setup_interface () {
 
 				[ -z "$gw" -a "$mask" = "$pmask" ] && {
 					case "$addr" in
-						"${prefix%*::}"*) continue;;
+					"${prefix%*::}"*) continue ;;
 					esac
 				}
 				raroutes="$raroutes $route"
@@ -220,25 +220,25 @@ teardown_interface() {
 }
 
 case "$2" in
-	bound)
-		teardown_interface "$1"
-		setup_interface "$1"
+bound)
+	teardown_interface "$1"
+	setup_interface "$1"
 	;;
-	informed|updated|rebound)
-		setup_interface "$1"
+informed | updated | rebound)
+	setup_interface "$1"
 	;;
-	ra-updated)
-		[ -n "$ADDRESSES$RA_ADDRESSES$PREFIXES$USERPREFIX" ] && setup_interface "$1"
+ra-updated)
+	[ -n "$ADDRESSES$RA_ADDRESSES$PREFIXES$USERPREFIX" ] && setup_interface "$1"
 	;;
-	started|stopped|unbound)
-		teardown_interface "$1"
+started | stopped | unbound)
+	teardown_interface "$1"
 	;;
 esac
 
 # user rules
 [ -f /etc/odhcp6c.user ] && . /etc/odhcp6c.user "$@"
 for f in /etc/odhcp6c.user.d/*; do
-  [ -f "$f" ] && (. "$f" "$@")
+	[ -f "$f" ] && (. "$f" "$@")
 done
 
 exit 0

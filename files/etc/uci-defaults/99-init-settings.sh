@@ -18,14 +18,14 @@ fi
 echo "Tunnel Installed: $(opkg list-installed | grep -e luci-app-nikki -e luci-app-neko -e luci-app-openclash -e luci-app-passwall | awk '{print $1}' | tr '\n' ' ')"
 echo "###############################################"
 
-# Set login root password
+# set login root password
 (
   echo "root"
   sleep 1
   echo "root"
 ) | passwd >/dev/null
 
-# Set hostname and Timezone to Asia/Jakarta
+# set hostname and Timezone to Asia/Jakarta
 echo "Setup NTP Server and Time Zone to Asia/Jakarta"
 uci set system.@system[0].hostname='OpenWRT'
 uci set system.@system[0].timezone='WIB-7'
@@ -131,7 +131,7 @@ sed -i -e '/12d1:15c1/,+5d' /etc/usb-mode.json
 # remove dw5821e usb-modeswitch
 sed -i -e '/413c:81d7/,+5d' /etc/usb-mode.json
 
-# Disable /etc/config/xmm-modem
+# disable /etc/config/xmm-modem
 uci set xmm-modem.@xmm-modem[0].enable='0'
 uci commit
 
@@ -169,6 +169,14 @@ if opkg list-installed | grep luci-app-neko >/dev/null; then
   chmod +x /etc/neko/core/mihomo
 fi
 
+# configurating nikki
+if opkg list-installed | grep luci-app-neko >/dev/null; then
+  echo "Nikki Detected!"
+else
+  echo "No Nikki Detected."
+  rm -rf /etc/nikki/run
+fi
+
 # configurating openclash
 if opkg list-installed | grep luci-app-openclash >/dev/null; then
   echo "Openclash Detected!"
@@ -203,6 +211,10 @@ fi
 # install opkg-upgrade
 echo "Configuring OPKG-Upgrade..."
 wget "https://raw.githubusercontent.com/tavinus/opkg-upgrade/master/opkg-upgrade.sh" -O "/usr/sbin/opkg-upgrade" && chmod 755 "/usr/sbin/opkg-upgrade"
+
+# install ookla speedtest
+# echo "Configuring Speedtest..."
+# wget -qO- "https://raw.githubusercontent.com/kinhsman/openwrt/main/scripts/speedtest-install.sh" | ash
 
 echo "All first boot setup complete!"
 

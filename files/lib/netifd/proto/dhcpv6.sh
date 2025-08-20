@@ -141,4 +141,3 @@ proto_dhcpv6_teardown() {
 }
 
 add_protocol dhcpv6
-

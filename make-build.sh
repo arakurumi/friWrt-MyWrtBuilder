@@ -70,7 +70,7 @@ PACKAGES+=" samba4-server luci-app-samba4 aria2 ariang luci-app-aria2 luci-app-t
 PACKAGES+=" internet-detector luci-app-internet-detector internet-detector-mod-modem-restart nlbwmon luci-app-nlbwmon vnstat2 vnstati2 luci-app-vnstat2 luci-app-netmonitor"
 
 # Speedtest
-PACKAGES+=" librespeed-go python3-speedtest-cli iperf3 luci-app-netspeedtest"
+PACKAGES+=" librespeed-go iperf3 luci-app-netspeedtest python3-speedtest-cli"
 
 # Base64 Encode Decode
 PACKAGES+=" luci-app-base64"
@@ -124,7 +124,7 @@ fi
 FILES="files"
 
 # Disable service
-# DISABLED_SERVICES="AdGuardHome"
+DISABLED_SERVICES="AdGuardHome"
 
 # Start build firmware
 make image PROFILE="$1" PACKAGES="$PACKAGES $EXCLUDED" FILES="$FILES" DISABLED_SERVICES="$DISABLED_SERVICES"

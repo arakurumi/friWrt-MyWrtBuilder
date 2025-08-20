@@ -21,18 +21,18 @@ hostapd_append_wep_key() {
 	wep_keyidx=0
 	set_default key 1
 	case "$key" in
-		[1234])
-			for idx in 1 2 3 4; do
-				local zidx
-				zidx="$(($idx - 1))"
-				json_get_var ckey "key${idx}"
-				[ -n "$ckey" ] && \
-					append $var "wep_key${zidx}=$(prepare_key_wep "$ckey")" "$N$T"
-			done
-			wep_keyidx="$((key - 1))"
+	[1234])
+		for idx in 1 2 3 4; do
+			local zidx
+			zidx="$(($idx - 1))"
+			json_get_var ckey "key${idx}"
+			[ -n "$ckey" ] &&
+				append $var "wep_key${zidx}=$(prepare_key_wep "$ckey")" "$N$T"
+		done
+		wep_keyidx="$((key - 1))"
 		;;
-		*)
-			append $var "wep_key0=$(prepare_key_wep "$key")" "$N$T"
+	*)
+		append $var "wep_key0=$(prepare_key_wep "$key")" "$N$T"
 		;;
 	esac
 }
@@ -41,45 +41,45 @@ hostapd_append_wpa_key_mgmt() {
 	local auth_type_l="$(echo $auth_type | tr 'a-z' 'A-Z')"
 
 	case "$auth_type" in
-		psk|eap)
-			append wpa_key_mgmt "WPA-$auth_type_l"
-			[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-${auth_type_l}"
-			[ "${ieee80211w:-0}" -gt 0 ] && append wpa_key_mgmt "WPA-${auth_type_l}-SHA256"
+	psk | eap)
+		append wpa_key_mgmt "WPA-$auth_type_l"
+		[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-${auth_type_l}"
+		[ "${ieee80211w:-0}" -gt 0 ] && append wpa_key_mgmt "WPA-${auth_type_l}-SHA256"
 		;;
-		eap192)
-			append wpa_key_mgmt "WPA-EAP-SUITE-B-192"
-			[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-EAP-SHA384"
+	eap192)
+		append wpa_key_mgmt "WPA-EAP-SUITE-B-192"
+		[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-EAP-SHA384"
 		;;
-		eap-eap192)
-			append wpa_key_mgmt "WPA-EAP-SUITE-B-192"
-			append wpa_key_mgmt "WPA-EAP"
-			[ "${ieee80211r:-0}" -gt 0 ] && {
-				append wpa_key_mgmt "FT-EAP-SHA384"
-				append wpa_key_mgmt "FT-EAP"
-			}
-			[ "${ieee80211w:-0}" -gt 0 ] && append wpa_key_mgmt "WPA-EAP-SHA256"
+	eap-eap192)
+		append wpa_key_mgmt "WPA-EAP-SUITE-B-192"
+		append wpa_key_mgmt "WPA-EAP"
+		[ "${ieee80211r:-0}" -gt 0 ] && {
+			append wpa_key_mgmt "FT-EAP-SHA384"
+			append wpa_key_mgmt "FT-EAP"
+		}
+		[ "${ieee80211w:-0}" -gt 0 ] && append wpa_key_mgmt "WPA-EAP-SHA256"
 		;;
-		sae)
-			append wpa_key_mgmt "SAE"
-			[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-SAE"
+	sae)
+		append wpa_key_mgmt "SAE"
+		[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-SAE"
 		;;
-		psk-sae)
-			append wpa_key_mgmt "WPA-PSK"
-			[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-PSK"
-			[ "${ieee80211w:-0}" -gt 0 ] && append wpa_key_mgmt "WPA-PSK-SHA256"
-			append wpa_key_mgmt "SAE"
-			[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-SAE"
+	psk-sae)
+		append wpa_key_mgmt "WPA-PSK"
+		[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-PSK"
+		[ "${ieee80211w:-0}" -gt 0 ] && append wpa_key_mgmt "WPA-PSK-SHA256"
+		append wpa_key_mgmt "SAE"
+		[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt "FT-SAE"
 		;;
-		owe)
-			append wpa_key_mgmt "OWE"
+	owe)
+		append wpa_key_mgmt "OWE"
 		;;
 	esac
 
 	[ "$fils" -gt 0 ] && {
 		case "$auth_type" in
-			eap*)
-				append wpa_key_mgmt FILS-SHA256
-				[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt FT-FILS-SHA256
+		eap*)
+			append wpa_key_mgmt FILS-SHA256
+			[ "${ieee80211r:-0}" -gt 0 ] && append wpa_key_mgmt FT-FILS-SHA256
 			;;
 		esac
 	}
@@ -167,53 +167,53 @@ hostapd_prepare_device_config() {
 	if [ "$hwmode" = "g" ] || [ "$hwmode" = "a" ]; then
 		[ -n "$require_mode" ] && legacy_rates=0
 		case "$require_mode" in
-			n) append base_cfg "require_ht=1" "$N";;
-			ac) append base_cfg "require_vht=1" "$N";;
+		n) append base_cfg "require_ht=1" "$N" ;;
+		ac) append base_cfg "require_vht=1" "$N" ;;
 		esac
 	fi
 	case "$hwmode" in
-		b)
-			if [ "$cell_density" -eq 1 ]; then
-				set_default rate_list "5500 11000"
-				set_default basic_rate_list "5500 11000"
-			elif [ "$cell_density" -ge 2 ]; then
-				set_default rate_list "11000"
-				set_default basic_rate_list "11000"
-			fi
+	b)
+		if [ "$cell_density" -eq 1 ]; then
+			set_default rate_list "5500 11000"
+			set_default basic_rate_list "5500 11000"
+		elif [ "$cell_density" -ge 2 ]; then
+			set_default rate_list "11000"
+			set_default basic_rate_list "11000"
+		fi
 		;;
-		g)
-			if [ "$cell_density" -eq 0 ] || [ "$cell_density" -eq 1 ]; then
-				if [ "$legacy_rates" -eq 0 ]; then
-					set_default rate_list "6000 9000 12000 18000 24000 36000 48000 54000"
-					set_default basic_rate_list "6000 12000 24000"
-				elif [ "$cell_density" -eq 1 ]; then
-					set_default rate_list "5500 6000 9000 11000 12000 18000 24000 36000 48000 54000"
-					set_default basic_rate_list "5500 11000"
-				fi
-			elif [ "$cell_density" -ge 3 ] && [ "$legacy_rates" -ne 0 ] || [ "$cell_density" -eq 2 ]; then
-				if [ "$legacy_rates" -eq 0 ]; then
-					set_default rate_list "12000 18000 24000 36000 48000 54000"
-					set_default basic_rate_list "12000 24000"
-				else
-					set_default rate_list "11000 12000 18000 24000 36000 48000 54000"
-					set_default basic_rate_list "11000"
-				fi
-			elif [ "$cell_density" -ge 3 ]; then
-				set_default rate_list "24000 36000 48000 54000"
-				set_default basic_rate_list "24000"
-			fi
-		;;
-		a)
-			if [ "$cell_density" -eq 1 ]; then
+	g)
+		if [ "$cell_density" -eq 0 ] || [ "$cell_density" -eq 1 ]; then
+			if [ "$legacy_rates" -eq 0 ]; then
 				set_default rate_list "6000 9000 12000 18000 24000 36000 48000 54000"
 				set_default basic_rate_list "6000 12000 24000"
-			elif [ "$cell_density" -eq 2 ]; then
+			elif [ "$cell_density" -eq 1 ]; then
+				set_default rate_list "5500 6000 9000 11000 12000 18000 24000 36000 48000 54000"
+				set_default basic_rate_list "5500 11000"
+			fi
+		elif [ "$cell_density" -ge 3 ] && [ "$legacy_rates" -ne 0 ] || [ "$cell_density" -eq 2 ]; then
+			if [ "$legacy_rates" -eq 0 ]; then
 				set_default rate_list "12000 18000 24000 36000 48000 54000"
 				set_default basic_rate_list "12000 24000"
-			elif [ "$cell_density" -ge 3 ]; then
-				set_default rate_list "24000 36000 48000 54000"
-				set_default basic_rate_list "24000"
+			else
+				set_default rate_list "11000 12000 18000 24000 36000 48000 54000"
+				set_default basic_rate_list "11000"
 			fi
+		elif [ "$cell_density" -ge 3 ]; then
+			set_default rate_list "24000 36000 48000 54000"
+			set_default basic_rate_list "24000"
+		fi
+		;;
+	a)
+		if [ "$cell_density" -eq 1 ]; then
+			set_default rate_list "6000 9000 12000 18000 24000 36000 48000 54000"
+			set_default basic_rate_list "6000 12000 24000"
+		elif [ "$cell_density" -eq 2 ]; then
+			set_default rate_list "12000 18000 24000 36000 48000 54000"
+			set_default basic_rate_list "12000 24000"
+		elif [ "$cell_density" -ge 3 ]; then
+			set_default rate_list "24000 36000 48000 54000"
+			set_default basic_rate_list "24000"
+		fi
 		;;
 	esac
 
@@ -240,7 +240,7 @@ hostapd_prepare_device_config() {
 		append base_cfg "$val" "$N"
 	done
 
-	cat > "$config" <<EOF
+	cat >"$config" <<EOF
 driver=$driver
 $base_cfg
 EOF
@@ -382,7 +382,7 @@ hostapd_set_vlan_file() {
 	local ifname="$1"
 	local vlan="$2"
 	json_get_vars name vid
-	echo "${vid} ${ifname}-${name}" >> /var/run/hostapd-${ifname}.vlan
+	echo "${vid} ${ifname}-${name}" >>/var/run/hostapd-${ifname}.vlan
 	wireless_add_vlan "${vlan}" "${ifname}-${name}"
 }
 
@@ -401,7 +401,7 @@ hostapd_set_psk_file() {
 	json_get_vars mac vid key
 	set_default mac "00:00:00:00:00:00"
 	[ -n "$vid" ] && vlan_id="vlanid=$vid "
-	echo "${vlan_id} ${mac} ${key}" >> /var/run/hostapd-${ifname}.psk
+	echo "${vlan_id} ${mac} ${key}" >>/var/run/hostapd-${ifname}.psk
 }
 
 hostapd_set_psk() {
@@ -619,16 +619,16 @@ hostapd_set_bss_options() {
 	[ "$tdls_prohibit" -gt 0 ] && append bss_conf "tdls_prohibit=$tdls_prohibit" "$N"
 
 	[ "$wpa" -gt 0 ] && {
-		[ -n "$wpa_group_rekey"  ] && append bss_conf "wpa_group_rekey=$wpa_group_rekey" "$N"
-		[ -n "$wpa_pair_rekey"   ] && append bss_conf "wpa_ptk_rekey=$wpa_pair_rekey"    "$N"
-		[ -n "$wpa_master_rekey" ] && append bss_conf "wpa_gmk_rekey=$wpa_master_rekey"  "$N"
+		[ -n "$wpa_group_rekey" ] && append bss_conf "wpa_group_rekey=$wpa_group_rekey" "$N"
+		[ -n "$wpa_pair_rekey" ] && append bss_conf "wpa_ptk_rekey=$wpa_pair_rekey" "$N"
+		[ -n "$wpa_master_rekey" ] && append bss_conf "wpa_gmk_rekey=$wpa_master_rekey" "$N"
 		[ -n "$wpa_strict_rekey" ] && append bss_conf "wpa_strict_rekey=$wpa_strict_rekey" "$N"
 	}
 
-	set_default nasid "${macaddr//\:}"
+	set_default nasid "${macaddr//\:/}"
 	append bss_conf "nas_identifier=$nasid" "$N"
 
-	[ -n "$acct_interval" ] && \
+	[ -n "$acct_interval" ] &&
 		append bss_conf "radius_acct_interim_interval=$acct_interval" "$N"
 	json_for_each_item append_acct_server acct_server
 	json_for_each_item append_radius_acct_req_attr radius_acct_req_attr
@@ -636,15 +636,15 @@ hostapd_set_bss_options() {
 	[ -n "$ocv" ] && append bss_conf "ocv=$ocv" "$N"
 
 	case "$auth_type" in
-		sae|owe|eap192|eap-eap192)
-			set_default ieee80211w 2
-			set_default sae_require_mfp 1
-			set_default sae_pwe 2
+	sae | owe | eap192 | eap-eap192)
+		set_default ieee80211w 2
+		set_default sae_require_mfp 1
+		set_default sae_pwe 2
 		;;
-		psk-sae)
-			set_default ieee80211w 1
-			set_default sae_require_mfp 1
-			set_default sae_pwe 2
+	psk-sae)
+		set_default ieee80211w 1
+		set_default sae_require_mfp 1
+		set_default sae_pwe 2
 		;;
 	esac
 	[ -n "$sae_require_mfp" ] && append bss_conf "sae_require_mfp=$sae_require_mfp" "$N"
@@ -653,137 +653,137 @@ hostapd_set_bss_options() {
 	local vlan_possible=""
 
 	case "$auth_type" in
-		none|owe)
-			json_get_vars owe_transition_bssid owe_transition_ssid owe_transition_ifname
+	none | owe)
+		json_get_vars owe_transition_bssid owe_transition_ssid owe_transition_ifname
 
-			[ -n "$owe_transition_ssid" ] && append bss_conf "owe_transition_ssid=\"$owe_transition_ssid\"" "$N"
-			[ -n "$owe_transition_bssid" ] && append bss_conf "owe_transition_bssid=$owe_transition_bssid" "$N"
-			[ -n "$owe_transition_ifname" ] && append bss_conf "owe_transition_ifname=$owe_transition_ifname" "$N"
+		[ -n "$owe_transition_ssid" ] && append bss_conf "owe_transition_ssid=\"$owe_transition_ssid\"" "$N"
+		[ -n "$owe_transition_bssid" ] && append bss_conf "owe_transition_bssid=$owe_transition_bssid" "$N"
+		[ -n "$owe_transition_ifname" ] && append bss_conf "owe_transition_ifname=$owe_transition_ifname" "$N"
 
-			wps_possible=1
-			# Here we make the assumption that if we're in open mode
-			# with WPS enabled, we got to be in unconfigured state.
-			wps_not_configured=1
+		wps_possible=1
+		# Here we make the assumption that if we're in open mode
+		# with WPS enabled, we got to be in unconfigured state.
+		wps_not_configured=1
 		;;
-		psk|sae|psk-sae)
-			json_get_vars key wpa_psk_file
-			if [ "$auth_type" = "psk" ] && [ "$ppsk" -ne 0 ] ; then
-				json_get_vars auth_secret auth_port
-				set_default auth_port 1812
-				json_for_each_item append_auth_server auth_server
-				append bss_conf "macaddr_acl=2" "$N"
-				append bss_conf "wpa_psk_radius=2" "$N"
-			elif [ ${#key} -eq 64 ]; then
-				append bss_conf "wpa_psk=$key" "$N"
-			elif [ ${#key} -ge 8 ] && [ ${#key} -le 63 ]; then
-				append bss_conf "wpa_passphrase=$key" "$N"
-			elif [ -n "$key" ] || [ -z "$wpa_psk_file" ]; then
-				wireless_setup_vif_failed INVALID_WPA_PSK
-				return 1
-			fi
-			[ -z "$wpa_psk_file" ] && set_default wpa_psk_file /var/run/hostapd-$ifname.psk
-			[ -n "$wpa_psk_file" ] && {
-				[ -e "$wpa_psk_file" ] || touch "$wpa_psk_file"
-				append bss_conf "wpa_psk_file=$wpa_psk_file" "$N"
-			}
-			[ "$eapol_version" -ge "1" -a "$eapol_version" -le "2" ] && append bss_conf "eapol_version=$eapol_version" "$N"
-
-			set_default dynamic_vlan 0
-			vlan_possible=1
-			wps_possible=1
-		;;
-		eap|eap192|eap-eap192)
-			json_get_vars \
-				auth_server auth_secret auth_port \
-				dae_client dae_secret dae_port \
-				dynamic_ownip ownip radius_client_addr \
-				eap_reauth_period request_cui \
-				erp_domain mobility_domain \
-				fils_realm fils_dhcp
-
-			# radius can provide VLAN ID for clients
-			vlan_possible=1
-
-			set_default dynamic_ownip 1
-
-			# legacy compatibility
-			[ -n "$auth_server" ] || json_get_var auth_server server
-			[ -n "$auth_port" ] || json_get_var auth_port port
-			[ -n "$auth_secret" ] || json_get_var auth_secret key
-
-			[ "$fils" -gt 0 ] && {
-				set_default erp_domain "$mobility_domain"
-				set_default erp_domain "$(echo "$ssid" | md5sum | head -c 8)"
-				set_default fils_realm "$erp_domain"
-
-				append bss_conf "erp_send_reauth_start=1" "$N"
-				append bss_conf "erp_domain=$erp_domain" "$N"
-				append bss_conf "fils_realm=$fils_realm" "$N"
-				append bss_conf "fils_cache_id=$(echo "$fils_realm" | md5sum | head -c 4)" "$N"
-
-				[ "$fils_dhcp" = "*" ] && {
-					json_get_values network network
-					fils_dhcp=
-					for net in $network; do
-						fils_dhcp="$(ifstatus "$net" | jsonfilter -e '@.data.dhcpserver')"
-						[ -n "$fils_dhcp" ] && break
-					done
-
-					[ -z "$fils_dhcp" -a -n "$network_bridge" -a -n "$network_ifname" ] && \
-						fils_dhcp="$(udhcpc -B -n -q -s /lib/netifd/dhcp-get-server.sh -t 1 -i "$network_ifname" 2>/dev/null)"
-				}
-				[ -n "$fils_dhcp" ] && append bss_conf "dhcp_server=$fils_dhcp" "$N"
-			}
-
+	psk | sae | psk-sae)
+		json_get_vars key wpa_psk_file
+		if [ "$auth_type" = "psk" ] && [ "$ppsk" -ne 0 ]; then
+			json_get_vars auth_secret auth_port
 			set_default auth_port 1812
-			set_default dae_port 3799
-			set_default request_cui 0
+			json_for_each_item append_auth_server auth_server
+			append bss_conf "macaddr_acl=2" "$N"
+			append bss_conf "wpa_psk_radius=2" "$N"
+		elif [ ${#key} -eq 64 ]; then
+			append bss_conf "wpa_psk=$key" "$N"
+		elif [ ${#key} -ge 8 ] && [ ${#key} -le 63 ]; then
+			append bss_conf "wpa_passphrase=$key" "$N"
+		elif [ -n "$key" ] || [ -z "$wpa_psk_file" ]; then
+			wireless_setup_vif_failed INVALID_WPA_PSK
+			return 1
+		fi
+		[ -z "$wpa_psk_file" ] && set_default wpa_psk_file /var/run/hostapd-$ifname.psk
+		[ -n "$wpa_psk_file" ] && {
+			[ -e "$wpa_psk_file" ] || touch "$wpa_psk_file"
+			append bss_conf "wpa_psk_file=$wpa_psk_file" "$N"
+		}
+		[ "$eapol_version" -ge "1" -a "$eapol_version" -le "2" ] && append bss_conf "eapol_version=$eapol_version" "$N"
 
-			[ "$eap_server" -eq 0 ] && json_for_each_item append_auth_server auth_server
-			[ "$request_cui" -gt 0 ] && append bss_conf "radius_request_cui=$request_cui" "$N"
-			[ -n "$eap_reauth_period" ] && append bss_conf "eap_reauth_period=$eap_reauth_period" "$N"
-
-			[ -n "$dae_client" -a -n "$dae_secret" ] && {
-				append bss_conf "radius_das_port=$dae_port" "$N"
-				append bss_conf "radius_das_client=$dae_client $dae_secret" "$N"
-			}
-			json_for_each_item append_radius_auth_req_attr radius_auth_req_attr
-
-			if [ -n "$ownip" ]; then
-				append bss_conf "own_ip_addr=$ownip" "$N"
-			elif [ "$dynamic_ownip" -gt 0 ]; then
-				append bss_conf "dynamic_own_ip_addr=$dynamic_ownip" "$N"
-			fi
-
-			[ -n "$radius_client_addr" ] && append bss_conf "radius_client_addr=$radius_client_addr" "$N"
-			append bss_conf "eapol_key_index_workaround=1" "$N"
-			append bss_conf "ieee8021x=1" "$N"
-
-			[ "$eapol_version" -ge "1" -a "$eapol_version" -le "2" ] && append bss_conf "eapol_version=$eapol_version" "$N"
+		set_default dynamic_vlan 0
+		vlan_possible=1
+		wps_possible=1
 		;;
-		wep)
-			local wep_keyidx=0
-			json_get_vars key
-			hostapd_append_wep_key bss_conf
-			append bss_conf "wep_default_key=$wep_keyidx" "$N"
-			[ -n "$wep_rekey" ] && append bss_conf "wep_rekey_period=$wep_rekey" "$N"
+	eap | eap192 | eap-eap192)
+		json_get_vars \
+			auth_server auth_secret auth_port \
+			dae_client dae_secret dae_port \
+			dynamic_ownip ownip radius_client_addr \
+			eap_reauth_period request_cui \
+			erp_domain mobility_domain \
+			fils_realm fils_dhcp
+
+		# radius can provide VLAN ID for clients
+		vlan_possible=1
+
+		set_default dynamic_ownip 1
+
+		# legacy compatibility
+		[ -n "$auth_server" ] || json_get_var auth_server server
+		[ -n "$auth_port" ] || json_get_var auth_port port
+		[ -n "$auth_secret" ] || json_get_var auth_secret key
+
+		[ "$fils" -gt 0 ] && {
+			set_default erp_domain "$mobility_domain"
+			set_default erp_domain "$(echo "$ssid" | md5sum | head -c 8)"
+			set_default fils_realm "$erp_domain"
+
+			append bss_conf "erp_send_reauth_start=1" "$N"
+			append bss_conf "erp_domain=$erp_domain" "$N"
+			append bss_conf "fils_realm=$fils_realm" "$N"
+			append bss_conf "fils_cache_id=$(echo "$fils_realm" | md5sum | head -c 4)" "$N"
+
+			[ "$fils_dhcp" = "*" ] && {
+				json_get_values network network
+				fils_dhcp=
+				for net in $network; do
+					fils_dhcp="$(ifstatus "$net" | jsonfilter -e '@.data.dhcpserver')"
+					[ -n "$fils_dhcp" ] && break
+				done
+
+				[ -z "$fils_dhcp" -a -n "$network_bridge" -a -n "$network_ifname" ] &&
+					fils_dhcp="$(udhcpc -B -n -q -s /lib/netifd/dhcp-get-server.sh -t 1 -i "$network_ifname" 2>/dev/null)"
+			}
+			[ -n "$fils_dhcp" ] && append bss_conf "dhcp_server=$fils_dhcp" "$N"
+		}
+
+		set_default auth_port 1812
+		set_default dae_port 3799
+		set_default request_cui 0
+
+		[ "$eap_server" -eq 0 ] && json_for_each_item append_auth_server auth_server
+		[ "$request_cui" -gt 0 ] && append bss_conf "radius_request_cui=$request_cui" "$N"
+		[ -n "$eap_reauth_period" ] && append bss_conf "eap_reauth_period=$eap_reauth_period" "$N"
+
+		[ -n "$dae_client" -a -n "$dae_secret" ] && {
+			append bss_conf "radius_das_port=$dae_port" "$N"
+			append bss_conf "radius_das_client=$dae_client $dae_secret" "$N"
+		}
+		json_for_each_item append_radius_auth_req_attr radius_auth_req_attr
+
+		if [ -n "$ownip" ]; then
+			append bss_conf "own_ip_addr=$ownip" "$N"
+		elif [ "$dynamic_ownip" -gt 0 ]; then
+			append bss_conf "dynamic_own_ip_addr=$dynamic_ownip" "$N"
+		fi
+
+		[ -n "$radius_client_addr" ] && append bss_conf "radius_client_addr=$radius_client_addr" "$N"
+		append bss_conf "eapol_key_index_workaround=1" "$N"
+		append bss_conf "ieee8021x=1" "$N"
+
+		[ "$eapol_version" -ge "1" -a "$eapol_version" -le "2" ] && append bss_conf "eapol_version=$eapol_version" "$N"
+		;;
+	wep)
+		local wep_keyidx=0
+		json_get_vars key
+		hostapd_append_wep_key bss_conf
+		append bss_conf "wep_default_key=$wep_keyidx" "$N"
+		[ -n "$wep_rekey" ] && append bss_conf "wep_rekey_period=$wep_rekey" "$N"
 		;;
 	esac
 
 	case "$auth_type" in
-		none|owe|psk|sae|psk-sae|wep)
-			json_get_vars \
+	none | owe | psk | sae | psk-sae | wep)
+		json_get_vars \
 			auth_server auth_port auth_secret \
 			ownip radius_client_addr
 
-			[ -n "$auth_server" ] &&  {
-				set_default auth_port 1812
+		[ -n "$auth_server" ] && {
+			set_default auth_port 1812
 
-				json_for_each_item append_auth_server auth_server
-				[ -n "$ownip" ] && append bss_conf "own_ip_addr=$ownip" "$N"
-				[ -n "$radius_client_addr" ] && append bss_conf "radius_client_addr=$radius_client_addr" "$N"
-				append bss_conf "macaddr_acl=2" "$N"
-			}
+			json_for_each_item append_auth_server auth_server
+			[ -n "$ownip" ] && append bss_conf "own_ip_addr=$ownip" "$N"
+			[ -n "$radius_client_addr" ] && append bss_conf "radius_client_addr=$radius_client_addr" "$N"
+			append bss_conf "macaddr_acl=2" "$N"
+		}
 		;;
 	esac
 
@@ -901,11 +901,11 @@ hostapd_set_bss_options() {
 			set_default reassociation_deadline 1000
 
 			case "$auth_type" in
-				psk|sae|psk-sae)
-					set_default ft_psk_generate_local 1
+			psk | sae | psk-sae)
+				set_default ft_psk_generate_local 1
 				;;
-				*)
-					set_default ft_psk_generate_local 0
+			*)
+				set_default ft_psk_generate_local 0
 				;;
 			esac
 
@@ -924,7 +924,7 @@ hostapd_set_bss_options() {
 				set_default pmk_r1_push 0
 
 				[ -n "$r0kh" -a -n "$r1kh" ] || {
-					ft_key=`echo -n "$mobility_domain/${auth_secret:-${key}}" | md5sum | awk '{print $1}'`
+					ft_key=$(echo -n "$mobility_domain/${auth_secret:-${key}}" | md5sum | awk '{print $1}')
 
 					set_default r0kh "ff:ff:ff:ff:ff:ff,*,$ft_key"
 					set_default r1kh "00:00:00:00:00:00,00:00:00:00:00:00,$ft_key"
@@ -960,12 +960,12 @@ hostapd_set_bss_options() {
 			append bss_conf "rsn_preauth_interfaces=$network_bridge" "$N"
 		else
 			case "$auth_type" in
-			sae|psk-sae|owe)
+			sae | psk-sae | owe)
 				set_default auth_cache 1
-			;;
+				;;
 			*)
 				set_default auth_cache 0
-			;;
+				;;
 			esac
 		fi
 
@@ -974,38 +974,38 @@ hostapd_set_bss_options() {
 
 		# RSN -> allow management frame protection
 		case "$ieee80211w" in
-			[012])
-				json_get_vars ieee80211w_mgmt_cipher ieee80211w_max_timeout ieee80211w_retry_timeout
-				append bss_conf "ieee80211w=$ieee80211w" "$N"
-				[ "$ieee80211w" -gt "0" ] && {
-					if [ "$auth_type" = "eap192" ]; then
-						append bss_conf "group_mgmt_cipher=BIP-GMAC-256" "$N"
-					else
-						append bss_conf "group_mgmt_cipher=${ieee80211w_mgmt_cipher:-AES-128-CMAC}" "$N"
-					fi
-					[ -n "$ieee80211w_max_timeout" ] && \
-						append bss_conf "assoc_sa_query_max_timeout=$ieee80211w_max_timeout" "$N"
-					[ -n "$ieee80211w_retry_timeout" ] && \
-						append bss_conf "assoc_sa_query_retry_timeout=$ieee80211w_retry_timeout" "$N"
-				}
+		[012])
+			json_get_vars ieee80211w_mgmt_cipher ieee80211w_max_timeout ieee80211w_retry_timeout
+			append bss_conf "ieee80211w=$ieee80211w" "$N"
+			[ "$ieee80211w" -gt "0" ] && {
+				if [ "$auth_type" = "eap192" ]; then
+					append bss_conf "group_mgmt_cipher=BIP-GMAC-256" "$N"
+				else
+					append bss_conf "group_mgmt_cipher=${ieee80211w_mgmt_cipher:-AES-128-CMAC}" "$N"
+				fi
+				[ -n "$ieee80211w_max_timeout" ] &&
+					append bss_conf "assoc_sa_query_max_timeout=$ieee80211w_max_timeout" "$N"
+				[ -n "$ieee80211w_retry_timeout" ] &&
+					append bss_conf "assoc_sa_query_retry_timeout=$ieee80211w_retry_timeout" "$N"
+			}
 			;;
 		esac
 	fi
 
 	_macfile="/var/run/hostapd-$ifname.maclist"
 	case "$macfilter" in
-		allow)
-			append bss_conf "macaddr_acl=1" "$N"
-			append bss_conf "accept_mac_file=$_macfile" "$N"
-			# accept_mac_file can be used to set MAC to VLAN ID mapping
-			vlan_possible=1
+	allow)
+		append bss_conf "macaddr_acl=1" "$N"
+		append bss_conf "accept_mac_file=$_macfile" "$N"
+		# accept_mac_file can be used to set MAC to VLAN ID mapping
+		vlan_possible=1
 		;;
-		deny)
-			append bss_conf "macaddr_acl=0" "$N"
-			append bss_conf "deny_mac_file=$_macfile" "$N"
+	deny)
+		append bss_conf "macaddr_acl=0" "$N"
+		append bss_conf "deny_mac_file=$_macfile" "$N"
 		;;
-		*)
-			_macfile=""
+	*)
+		_macfile=""
 		;;
 	esac
 
@@ -1019,7 +1019,7 @@ hostapd_set_bss_options() {
 				echo "$mac"
 			done
 			[ -n "$macfile" -a -f "$macfile" ] && cat "$macfile"
-		) > "$_macfile"
+		) >"$_macfile"
 	}
 
 	[ -n "$vlan_possible" -a -n "$dynamic_vlan" ] && {
@@ -1034,7 +1034,7 @@ hostapd_set_bss_options() {
 			set_default vlan_no_bridge 1
 		fi
 		append bss_conf "vlan_no_bridge=$vlan_no_bridge" "$N"
-		[ -n "$vlan_tagged_interface" ] && \
+		[ -n "$vlan_tagged_interface" ] &&
 			append bss_conf "vlan_tagged_interface=$vlan_tagged_interface" "$N"
 		[ -n "$vlan_file" ] && {
 			[ -e "$vlan_file" ] || touch "$vlan_file"
@@ -1061,13 +1061,13 @@ hostapd_set_bss_options() {
 		append bss_conf "esr=$iw_esr" "$N"
 		append bss_conf "uesa=$iw_uesa" "$N"
 
-		[ -n "$iw_access_network_type" ] && \
+		[ -n "$iw_access_network_type" ] &&
 			append bss_conf "access_network_type=$iw_access_network_type" "$N"
 		[ -n "$iw_hessid" ] && append bss_conf "hessid=$iw_hessid" "$N"
-		[ -n "$iw_venue_group" ] && \
+		[ -n "$iw_venue_group" ] &&
 			append bss_conf "venue_group=$iw_venue_group" "$N"
 		[ -n "$iw_venue_type" ] && append bss_conf "venue_type=$iw_venue_type" "$N"
-		[ -n "$iw_network_auth_type" ] && \
+		[ -n "$iw_network_auth_type" ] &&
 			append bss_conf "network_auth_type=$iw_network_auth_type" "$N"
 		[ -n "$iw_gas_address3" ] && append bss_conf "gas_address3=$iw_gas_address3" "$N"
 
@@ -1079,19 +1079,19 @@ hostapd_set_bss_options() {
 
 		iw_domain_name_conf=
 		json_for_each_item append_iw_domain_name iw_domain_name
-		[ -n "$iw_domain_name_conf" ] && \
+		[ -n "$iw_domain_name_conf" ] &&
 			append bss_conf "domain_name=$iw_domain_name_conf" "$N"
 
 		iw_anqp_3gpp_cell_net_conf=
 		json_for_each_item append_iw_anqp_3gpp_cell_net iw_anqp_3gpp_cell_net
-		[ -n "$iw_anqp_3gpp_cell_net_conf" ] && \
+		[ -n "$iw_anqp_3gpp_cell_net_conf" ] &&
 			append bss_conf "anqp_3gpp_cell_net=$iw_anqp_3gpp_cell_net_conf" "$N"
 	fi
 
 	set_default iw_qos_map_set 0,0,2,16,1,1,255,255,18,22,24,38,40,40,44,46,48,56
 	case "$iw_qos_map_set" in
-		*,*);;
-		*) iw_qos_map_set="";;
+	*,*) ;;
+	*) iw_qos_map_set="" ;;
 	esac
 	[ -n "$iw_qos_map_set" ] && append bss_conf "qos_map_set=$iw_qos_map_set" "$N"
 
@@ -1170,23 +1170,22 @@ hostapd_set_log_options() {
 	json_get_vars log_level log_80211 log_8021x log_radius log_wpa log_driver log_iapp log_mlme
 
 	set_default log_level 2
-	set_default log_80211  1
-	set_default log_8021x  1
+	set_default log_80211 1
+	set_default log_8021x 1
 	set_default log_radius 1
-	set_default log_wpa    1
+	set_default log_wpa 1
 	set_default log_driver 1
-	set_default log_iapp   1
-	set_default log_mlme   1
+	set_default log_iapp 1
+	set_default log_mlme 1
 
-	local log_mask="$(( \
-		($log_80211  << 0) | \
-		($log_8021x  << 1) | \
-		($log_radius << 2) | \
-		($log_wpa    << 3) | \
-		($log_driver << 4) | \
-		($log_iapp   << 5) | \
-		($log_mlme   << 6)   \
-	))"
+	local log_mask="$(((\
+		$log_80211 << 0) | (\
+		$log_8021x << 1) | (\
+		$log_radius << 2) | (\
+		$log_wpa << 3) | (\
+		$log_driver << 4) | (\
+		$log_iapp << 5) | (\
+		$log_mlme << 6)))"
 
 	append "$var" "logger_syslog=$log_mask" "$N"
 	append "$var" "logger_syslog_level=$log_level" "$N"
@@ -1219,11 +1218,11 @@ wpa_supplicant_prepare_interface() {
 	[ -n "$network_bridge" ] && {
 		fail=
 		case "$mode" in
-			adhoc)
-				fail=1
+		adhoc)
+			fail=1
 			;;
-			sta)
-				[ "$wds" = 1 -o "$multi_ap" = 1 ] || fail=1
+		sta)
+			[ "$wds" = 1 -o "$multi_ap" = 1 ] || fail=1
 			;;
 		esac
 
@@ -1253,7 +1252,7 @@ wpa_supplicant_prepare_interface() {
 		[ -e "$multiap_flag_file" ] && rm "$multiap_flag_file"
 	fi
 	wpa_supplicant_teardown_interface "$ifname"
-	cat > "$_config" <<EOF
+	cat >"$_config" <<EOF
 ${scan_list:+freq_list=$scan_list}
 $ap_scan
 $country_str
@@ -1268,18 +1267,18 @@ wpa_supplicant_set_fixed_freq() {
 	append network_data "fixed_freq=1" "$N$T"
 	append network_data "frequency=$freq" "$N$T"
 	case "$htmode" in
-		NOHT) append network_data "disable_ht=1" "$N$T";;
-		HE20|HT20|VHT20) append network_data "disable_ht40=1" "$N$T";;
-		HT40*|VHT40|VHT80|VHT160|HE40|HE80|HE160) append network_data "ht40=1" "$N$T";;
+	NOHT) append network_data "disable_ht=1" "$N$T" ;;
+	HE20 | HT20 | VHT20) append network_data "disable_ht40=1" "$N$T" ;;
+	HT40* | VHT40 | VHT80 | VHT160 | HE40 | HE80 | HE160) append network_data "ht40=1" "$N$T" ;;
 	esac
 	case "$htmode" in
-		VHT*) append network_data "vht=1" "$N$T";;
+	VHT*) append network_data "vht=1" "$N$T" ;;
 	esac
 	case "$htmode" in
-		HE80|VHT80) append network_data "max_oper_chwidth=1" "$N$T";;
-		HE160|VHT160) append network_data "max_oper_chwidth=2" "$N$T";;
-		HE20|HE40|VHT20|VHT40) append network_data "max_oper_chwidth=0" "$N$T";;
-		*) append network_data "disable_vht=1" "$N$T";;
+	HE80 | VHT80) append network_data "max_oper_chwidth=1" "$N$T" ;;
+	HE160 | VHT160) append network_data "max_oper_chwidth=2" "$N$T" ;;
+	HE20 | HE40 | VHT20 | VHT40) append network_data "max_oper_chwidth=0" "$N$T" ;;
+	*) append network_data "disable_vht=1" "$N$T" ;;
 	esac
 }
 
@@ -1300,11 +1299,11 @@ wpa_supplicant_add_network() {
 		default_disabled
 
 	case "$auth_type" in
-		sae|owe|eap192|eap-eap192)
-			set_default ieee80211w 2
+	sae | owe | eap192 | eap-eap192)
+		set_default ieee80211w 2
 		;;
-		psk-sae)
-			set_default ieee80211w 1
+	psk-sae)
+		set_default ieee80211w 1
 		;;
 	esac
 
@@ -1326,7 +1325,7 @@ wpa_supplicant_add_network() {
 
 		scan_ssid="scan_ssid=0"
 
-		[ "$_w_driver" = "nl80211" ] ||	append wpa_key_mgmt "WPA-NONE"
+		[ "$_w_driver" = "nl80211" ] || append wpa_key_mgmt "WPA-NONE"
 	}
 
 	[ "$_w_mode" = "mesh" ] && {
@@ -1350,181 +1349,181 @@ wpa_supplicant_add_network() {
 	[ -n "$ocv" ] && append network_data "ocv=$ocv" "$N$T"
 
 	case "$auth_type" in
-		none) ;;
-		owe)
-			hostapd_append_wpa_key_mgmt
-			key_mgmt="$wpa_key_mgmt"
+	none) ;;
+	owe)
+		hostapd_append_wpa_key_mgmt
+		key_mgmt="$wpa_key_mgmt"
 		;;
-		wep)
-			local wep_keyidx=0
-			hostapd_append_wep_key network_data
-			append network_data "wep_tx_keyidx=$wep_keyidx" "$N$T"
+	wep)
+		local wep_keyidx=0
+		hostapd_append_wep_key network_data
+		append network_data "wep_tx_keyidx=$wep_keyidx" "$N$T"
 		;;
-		wps)
-			key_mgmt='WPS'
+	wps)
+		key_mgmt='WPS'
 		;;
-		psk|sae|psk-sae)
-			local passphrase
+	psk | sae | psk-sae)
+		local passphrase
 
-			if [ "$_w_mode" != "mesh" ]; then
-				hostapd_append_wpa_key_mgmt
+		if [ "$_w_mode" != "mesh" ]; then
+			hostapd_append_wpa_key_mgmt
+		fi
+
+		key_mgmt="$wpa_key_mgmt"
+
+		if [ "$_w_mode" = "mesh" ] || [ "$auth_type" = "sae" ]; then
+			passphrase="sae_password=\"${key}\""
+		else
+			if [ ${#key} -eq 64 ]; then
+				passphrase="psk=${key}"
+			else
+				passphrase="psk=\"${key}\""
+			fi
+		fi
+		append network_data "$passphrase" "$N$T"
+		;;
+	eap | eap192 | eap-eap192)
+		hostapd_append_wpa_key_mgmt
+		key_mgmt="$wpa_key_mgmt"
+
+		json_get_vars eap_type identity anonymous_identity ca_cert ca_cert_usesystem
+
+		[ "$fils" -gt 0 ] && append network_data "erp=1" "$N$T"
+		if [ "$ca_cert_usesystem" -eq "1" -a -f "/etc/ssl/certs/ca-certificates.crt" ]; then
+			append network_data "ca_cert=\"/etc/ssl/certs/ca-certificates.crt\"" "$N$T"
+		else
+			[ -n "$ca_cert" ] && append network_data "ca_cert=\"$ca_cert\"" "$N$T"
+		fi
+		[ -n "$identity" ] && append network_data "identity=\"$identity\"" "$N$T"
+		[ -n "$anonymous_identity" ] && append network_data "anonymous_identity=\"$anonymous_identity\"" "$N$T"
+		case "$eap_type" in
+		tls)
+			json_get_vars client_cert priv_key priv_key_pwd
+			append network_data "client_cert=\"$client_cert\"" "$N$T"
+			append network_data "private_key=\"$priv_key\"" "$N$T"
+			append network_data "private_key_passwd=\"$priv_key_pwd\"" "$N$T"
+
+			json_get_vars subject_match
+			[ -n "$subject_match" ] && append network_data "subject_match=\"$subject_match\"" "$N$T"
+
+			json_get_values altsubject_match altsubject_match
+			if [ -n "$altsubject_match" ]; then
+				local list=
+				for x in $altsubject_match; do
+					append list "$x" ";"
+				done
+				append network_data "altsubject_match=\"$list\"" "$N$T"
 			fi
 
-			key_mgmt="$wpa_key_mgmt"
+			json_get_values domain_match domain_match
+			if [ -n "$domain_match" ]; then
+				local list=
+				for x in $domain_match; do
+					append list "$x" ";"
+				done
+				append network_data "domain_match=\"$list\"" "$N$T"
+			fi
 
-			if [ "$_w_mode" = "mesh" ] || [ "$auth_type" = "sae" ]; then
-				passphrase="sae_password=\"${key}\""
-			else
-				if [ ${#key} -eq 64 ]; then
-					passphrase="psk=${key}"
+			json_get_values domain_suffix_match domain_suffix_match
+			if [ -n "$domain_suffix_match" ]; then
+				local list=
+				for x in $domain_suffix_match; do
+					append list "$x" ";"
+				done
+				append network_data "domain_suffix_match=\"$list\"" "$N$T"
+			fi
+			;;
+		fast | peap | ttls)
+			json_get_vars auth password ca_cert2 ca_cert2_usesystem client_cert2 priv_key2 priv_key2_pwd
+			set_default auth MSCHAPV2
+
+			if [ "$auth" = "EAP-TLS" ]; then
+				if [ "$ca_cert2_usesystem" -eq "1" -a -f "/etc/ssl/certs/ca-certificates.crt" ]; then
+					append network_data "ca_cert2=\"/etc/ssl/certs/ca-certificates.crt\"" "$N$T"
 				else
-					passphrase="psk=\"${key}\""
+					[ -n "$ca_cert2" ] && append network_data "ca_cert2=\"$ca_cert2\"" "$N$T"
 				fi
-			fi
-			append network_data "$passphrase" "$N$T"
-		;;
-		eap|eap192|eap-eap192)
-			hostapd_append_wpa_key_mgmt
-			key_mgmt="$wpa_key_mgmt"
-
-			json_get_vars eap_type identity anonymous_identity ca_cert ca_cert_usesystem
-
-			[ "$fils" -gt 0 ] && append network_data "erp=1" "$N$T"
-			if [ "$ca_cert_usesystem" -eq "1" -a -f "/etc/ssl/certs/ca-certificates.crt" ]; then
-				append network_data "ca_cert=\"/etc/ssl/certs/ca-certificates.crt\"" "$N$T"
+				append network_data "client_cert2=\"$client_cert2\"" "$N$T"
+				append network_data "private_key2=\"$priv_key2\"" "$N$T"
+				append network_data "private_key2_passwd=\"$priv_key2_pwd\"" "$N$T"
 			else
-				[ -n "$ca_cert" ] && append network_data "ca_cert=\"$ca_cert\"" "$N$T"
+				append network_data "password=\"$password\"" "$N$T"
 			fi
-			[ -n "$identity" ] && append network_data "identity=\"$identity\"" "$N$T"
-			[ -n "$anonymous_identity" ] && append network_data "anonymous_identity=\"$anonymous_identity\"" "$N$T"
-			case "$eap_type" in
-				tls)
-					json_get_vars client_cert priv_key priv_key_pwd
-					append network_data "client_cert=\"$client_cert\"" "$N$T"
-					append network_data "private_key=\"$priv_key\"" "$N$T"
-					append network_data "private_key_passwd=\"$priv_key_pwd\"" "$N$T"
 
-					json_get_vars subject_match
-					[ -n "$subject_match" ] && append network_data "subject_match=\"$subject_match\"" "$N$T"
+			json_get_vars subject_match
+			[ -n "$subject_match" ] && append network_data "subject_match=\"$subject_match\"" "$N$T"
 
-					json_get_values altsubject_match altsubject_match
-					if [ -n "$altsubject_match" ]; then
-						local list=
-						for x in $altsubject_match; do
-							append list "$x" ";"
-						done
-						append network_data "altsubject_match=\"$list\"" "$N$T"
-					fi
+			json_get_values altsubject_match altsubject_match
+			if [ -n "$altsubject_match" ]; then
+				local list=
+				for x in $altsubject_match; do
+					append list "$x" ";"
+				done
+				append network_data "altsubject_match=\"$list\"" "$N$T"
+			fi
 
-					json_get_values domain_match domain_match
-					if [ -n "$domain_match" ]; then
-						local list=
-						for x in $domain_match; do
-							append list "$x" ";"
-						done
-						append network_data "domain_match=\"$list\"" "$N$T"
-					fi
+			json_get_values domain_match domain_match
+			if [ -n "$domain_match" ]; then
+				local list=
+				for x in $domain_match; do
+					append list "$x" ";"
+				done
+				append network_data "domain_match=\"$list\"" "$N$T"
+			fi
 
-					json_get_values domain_suffix_match domain_suffix_match
-					if [ -n "$domain_suffix_match" ]; then
-						local list=
-						for x in $domain_suffix_match; do
-							append list "$x" ";"
-						done
-						append network_data "domain_suffix_match=\"$list\"" "$N$T"
-					fi
+			json_get_values domain_suffix_match domain_suffix_match
+			if [ -n "$domain_suffix_match" ]; then
+				local list=
+				for x in $domain_suffix_match; do
+					append list "$x" ";"
+				done
+				append network_data "domain_suffix_match=\"$list\"" "$N$T"
+			fi
+
+			phase2proto="auth="
+			case "$auth" in
+			"auth"*)
+				phase2proto=""
 				;;
-				fast|peap|ttls)
-					json_get_vars auth password ca_cert2 ca_cert2_usesystem client_cert2 priv_key2 priv_key2_pwd
-					set_default auth MSCHAPV2
+			"EAP-"*)
+				auth="$(echo $auth | cut -b 5-)"
+				[ "$eap_type" = "ttls" ] &&
+					phase2proto="autheap="
+				json_get_vars subject_match2
+				[ -n "$subject_match2" ] && append network_data "subject_match2=\"$subject_match2\"" "$N$T"
 
-					if [ "$auth" = "EAP-TLS" ]; then
-						if [ "$ca_cert2_usesystem" -eq "1" -a -f "/etc/ssl/certs/ca-certificates.crt" ]; then
-							append network_data "ca_cert2=\"/etc/ssl/certs/ca-certificates.crt\"" "$N$T"
-						else
-							[ -n "$ca_cert2" ] && append network_data "ca_cert2=\"$ca_cert2\"" "$N$T"
-						fi
-						append network_data "client_cert2=\"$client_cert2\"" "$N$T"
-						append network_data "private_key2=\"$priv_key2\"" "$N$T"
-						append network_data "private_key2_passwd=\"$priv_key2_pwd\"" "$N$T"
-					else
-						append network_data "password=\"$password\"" "$N$T"
-					fi
+				json_get_values altsubject_match2 altsubject_match2
+				if [ -n "$altsubject_match2" ]; then
+					local list=
+					for x in $altsubject_match2; do
+						append list "$x" ";"
+					done
+					append network_data "altsubject_match2=\"$list\"" "$N$T"
+				fi
 
-					json_get_vars subject_match
-					[ -n "$subject_match" ] && append network_data "subject_match=\"$subject_match\"" "$N$T"
+				json_get_values domain_match2 domain_match2
+				if [ -n "$domain_match2" ]; then
+					local list=
+					for x in $domain_match2; do
+						append list "$x" ";"
+					done
+					append network_data "domain_match2=\"$list\"" "$N$T"
+				fi
 
-					json_get_values altsubject_match altsubject_match
-					if [ -n "$altsubject_match" ]; then
-						local list=
-						for x in $altsubject_match; do
-							append list "$x" ";"
-						done
-						append network_data "altsubject_match=\"$list\"" "$N$T"
-					fi
-
-					json_get_values domain_match domain_match
-					if [ -n "$domain_match" ]; then
-						local list=
-						for x in $domain_match; do
-							append list "$x" ";"
-						done
-						append network_data "domain_match=\"$list\"" "$N$T"
-					fi
-
-					json_get_values domain_suffix_match domain_suffix_match
-					if [ -n "$domain_suffix_match" ]; then
-						local list=
-						for x in $domain_suffix_match; do
-							append list "$x" ";"
-						done
-						append network_data "domain_suffix_match=\"$list\"" "$N$T"
-					fi
-
-					phase2proto="auth="
-					case "$auth" in
-						"auth"*)
-							phase2proto=""
-						;;
-						"EAP-"*)
-							auth="$(echo $auth | cut -b 5- )"
-							[ "$eap_type" = "ttls" ] &&
-								phase2proto="autheap="
-							json_get_vars subject_match2
-							[ -n "$subject_match2" ] && append network_data "subject_match2=\"$subject_match2\"" "$N$T"
-
-							json_get_values altsubject_match2 altsubject_match2
-							if [ -n "$altsubject_match2" ]; then
-								local list=
-								for x in $altsubject_match2; do
-									append list "$x" ";"
-								done
-								append network_data "altsubject_match2=\"$list\"" "$N$T"
-							fi
-
-							json_get_values domain_match2 domain_match2
-							if [ -n "$domain_match2" ]; then
-								local list=
-								for x in $domain_match2; do
-									append list "$x" ";"
-								done
-								append network_data "domain_match2=\"$list\"" "$N$T"
-							fi
-
-							json_get_values domain_suffix_match2 domain_suffix_match2
-							if [ -n "$domain_suffix_match2" ]; then
-								local list=
-								for x in $domain_suffix_match2; do
-									append list "$x" ";"
-								done
-								append network_data "domain_suffix_match2=\"$list\"" "$N$T"
-							fi
-						;;
-					esac
-					append network_data "phase2=\"$phase2proto$auth\"" "$N$T"
+				json_get_values domain_suffix_match2 domain_suffix_match2
+				if [ -n "$domain_suffix_match2" ]; then
+					local list=
+					for x in $domain_suffix_match2; do
+						append list "$x" ";"
+					done
+					append network_data "domain_suffix_match2=\"$list\"" "$N$T"
+				fi
 				;;
 			esac
-			append network_data "eap=$(echo $eap_type | tr 'a-z' 'A-Z')" "$N$T"
+			append network_data "phase2=\"$phase2proto$auth\"" "$N$T"
+			;;
+		esac
+		append network_data "eap=$(echo $eap_type | tr 'a-z' 'A-Z')" "$N$T"
 		;;
 	esac
 
@@ -1535,17 +1534,17 @@ wpa_supplicant_add_network() {
 
 	[ "$mode" = mesh ] || {
 		case "$wpa" in
-			1)
-				append network_data "proto=WPA" "$N$T"
+		1)
+			append network_data "proto=WPA" "$N$T"
 			;;
-			2)
-				append network_data "proto=RSN" "$N$T"
+		2)
+			append network_data "proto=RSN" "$N$T"
 			;;
 		esac
 
 		case "$ieee80211w" in
-			[012])
-				[ "$wpa" -ge 2 ] && append network_data "ieee80211w=$ieee80211w" "$N$T"
+		[012])
+			[ "$wpa" -ge 2 ] && append network_data "ieee80211w=$ieee80211w" "$N$T"
 			;;
 		esac
 	}
@@ -1574,9 +1573,9 @@ wpa_supplicant_add_network() {
 	}
 
 	if [ "$key_mgmt" = "WPS" ]; then
-		echo "wps_cred_processing=1" >> "$_config"
+		echo "wps_cred_processing=1" >>"$_config"
 	else
-		cat >> "$_config" <<EOF
+		cat >>"$_config" <<EOF
 network={
 	$scan_ssid
 	ssid="$ssid"
